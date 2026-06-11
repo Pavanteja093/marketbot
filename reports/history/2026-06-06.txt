@@ -1,0 +1,67 @@
+======================================================================
+MASTER MORNING REPORT
+======================================================================
+
+GLOBAL MARKETS
+----------------------------------------
+       Asset    Price  Change %
+      NASDAQ 25709.43     -4.18
+      S&P500  7383.74     -2.64
+    DOWJONES 50866.78     -1.35
+        GOLD  4337.10     -3.10
+      SILVER    68.94     -6.55
+       CRUDE    90.54     -2.69
+DOLLAR_INDEX   100.07      0.66
+   INDIA_VIX    15.79     -0.63
+
+INDIA ECONOMY
+----------------------------------------
+Inflation : Under Control
+Rates     : Neutral
+
+MARKET BRAIN
+----------------------------------------
+View       : Neutral
+Regime     : RANGE BOUND
+Sector     : AUTO
+FII Flow   : Net Buyer
+Risk Score : 50/100
+
+TRADING PLAYBOOK
+----------------------------------------
+Index View   : Range Bound
+Options View : Prefer Option Selling / Non-Directional Strategies
+Best Sector  : AUTO
+Confidence   : 60/100
+
+TOP STOCKS WITH REASONS
+----------------------------------------
+
+ITC.NS
+Sector : FMCG
+Score  : 84.57
+Reason : Positive price action, High composite score, Belongs to FMCG sector
+
+M&M.NS
+Sector : AUTO
+Score  : 75.8
+Reason : Positive price action, High composite score, Belongs to AUTO sector
+
+HEROMOTOCO.NS
+Sector : AUTO
+Score  : 72.73
+Reason : Strong price momentum, High composite score, Belongs to AUTO sector
+
+ICICIBANK.NS
+Sector : BANKING
+Score  : 72.35
+Reason : Positive price action, High composite score, Belongs to BANKING sector
+
+COALINDIA.NS
+Sector : METALS
+Score  : 71.01
+Reason : Strong price momentum, High composite score, Belongs to METALS sector
+
+ACTION
+----------------------------------------
+Prefer stock-specific opportunities.

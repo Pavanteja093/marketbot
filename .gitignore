@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+
+.vscode/
+
+analytics/market_intelligence.db
+
+*.log

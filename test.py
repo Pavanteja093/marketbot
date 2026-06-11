@@ -1,22 +1,20 @@
+from pathlib import Path
 import sqlite3
 import pandas as pd
 
-conn = sqlite3.connect("market_intelligence.db")
+BASE_DIR = Path(__file__).resolve().parent
+DB_PATH = BASE_DIR / "market_intelligence.db"
 
-df = pd.read_sql("""
+conn = sqlite3.connect(str(DB_PATH))
 
-SELECT
-    trade_date,
-    rank,
-    symbol,
-    sector,
-    score
-
-FROM signal_history
-
-ORDER BY trade_date DESC, rank
-
-""", conn)
+df = pd.read_sql(
+    """
+    SELECT DISTINCT trade_date
+    FROM stocks_daily
+    ORDER BY trade_date
+    """,
+    conn
+)
 
 conn.close()
 

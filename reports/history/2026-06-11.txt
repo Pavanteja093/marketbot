@@ -1,0 +1,67 @@
+======================================================================
+MASTER MORNING REPORT
+======================================================================
+
+GLOBAL MARKETS
+----------------------------------------
+       Asset   Price  Change %
+      NASDAQ     NaN       NaN
+      S&P500     NaN       NaN
+    DOWJONES     NaN       NaN
+        GOLD 4123.00      0.36
+      SILVER   64.62      0.03
+       CRUDE   89.17     -0.96
+DOLLAR_INDEX  100.02      0.11
+   INDIA_VIX   15.60      0.14
+
+INDIA ECONOMY
+----------------------------------------
+Inflation : Under Control
+Rates     : Neutral
+
+MARKET BRAIN
+----------------------------------------
+View       : Neutral
+Regime     : RANGE BOUND
+Sector     : BANKING
+FII Flow   : Net Buyer
+Risk Score : 50/100
+
+TRADING PLAYBOOK
+----------------------------------------
+Index View   : Range Bound
+Options View : Prefer Option Selling / Non-Directional Strategies
+Best Sector  : BANKING
+Confidence   : 60/100
+
+TOP STOCKS WITH REASONS
+----------------------------------------
+
+ICICIBANK.NS
+Sector : BANKING
+Score  : 96.8
+Reason : Strong price momentum, High composite score, Belongs to BANKING sector
+
+KOTAKBANK.NS
+Sector : BANKING
+Score  : 94.15
+Reason : Strong price momentum, High composite score, Belongs to BANKING sector
+
+HDFCBANK.NS
+Sector : BANKING
+Score  : 82.52
+Reason : Positive price action, High composite score, Belongs to BANKING sector
+
+SBIN.NS
+Sector : BANKING
+Score  : 81.09
+Reason : Positive price action, High composite score, Belongs to BANKING sector
+
+AXISBANK.NS
+Sector : BANKING
+Score  : 80.68
+Reason : Positive price action, High composite score, Belongs to BANKING sector
+
+ACTION
+----------------------------------------
+Prefer stock-specific opportunities.

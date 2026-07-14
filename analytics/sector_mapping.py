@@ -18,7 +18,8 @@ SECTORS = {
     "PHARMA": [
         "SUNPHARMA.NS",
         "DRREDDY.NS",
-        "CIPLA.NS"
+        "CIPLA.NS",
+        "APOLLOHOSP.NS"
     ],
 
     "AUTO": [
@@ -26,7 +27,8 @@ SECTORS = {
         "M&M.NS",
         "TATAMOTORS.NS",
         "BAJAJ-AUTO.NS",
-        "HEROMOTOCO.NS"
+        "HEROMOTOCO.NS",
+        "EICHERMOT.NS"
     ],
 
     "METALS": [
@@ -41,12 +43,52 @@ SECTORS = {
         "HINDUNILVR.NS",
         "NESTLEIND.NS",
         "BRITANNIA.NS",
-        "TATACONSUM.NS"
+        "TATACONSUM.NS",
+        "ASIANPAINT.NS",
+        "TRENT.NS"
     ],
 
     "ENERGY": [
         "RELIANCE.NS",
         "ONGC.NS",
-        "BPCL.NS"
+        "BPCL.NS",
+        "NTPC.NS",
+        "POWERGRID.NS"
+    ],
+
+    "FINANCIALS": [
+        "BAJAJFINSV.NS",
+        "BAJFINANCE.NS",
+        "SBILIFE.NS",
+        "HDFCLIFE.NS",
+        "SHRIRAMFIN.NS",
+        "JIOFIN.NS"
+    ],
+
+    "INFRASTRUCTURE": [
+        "LT.NS",
+        "ADANIPORTS.NS"
+    ],
+
+    "CEMENT": [
+        "ULTRACEMCO.NS",
+        "GRASIM.NS"
+    ],
+
+    "TELECOM": [
+        "BHARTIARTL.NS"
+    ],
+
+    "POWER": [
+        "BEL.NS"
+    ],
+
+    "DIVERSIFIED": [
+        "ADANIENT.NS"
+    ],
+
+    "CONSUMER": [
+        "ETERNAL.NS"
     ]
+
 }

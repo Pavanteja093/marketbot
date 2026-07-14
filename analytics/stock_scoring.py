@@ -2,28 +2,42 @@ import sqlite3
 import pandas as pd
 from pathlib import Path
 
-from sector_mapping import SECTORS
+from analytics.sector_mapping import SECTORS
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DB_PATH = BASE_DIR / "market_intelligence.db"
 
 
-def get_stock_scores():
+def get_stock_scores(trade_date=None):
 
     conn = sqlite3.connect(str(DB_PATH))
 
-    query = """
-    SELECT
-        symbol,
-        close,
-        volume,
-        change_pct
-    FROM stocks_daily
-    WHERE trade_date = (
-        SELECT MAX(trade_date)
+    if trade_date is None:
+
+        query = """
+        SELECT
+             symbol,
+            close,
+            volume,
+            change_pct
         FROM stocks_daily
-    )
-    """
+        WHERE trade_date = (
+            SELECT MAX(trade_date)
+            FROM stocks_daily
+        )
+        """
+    else:
+
+        query= f"""
+        SELECT
+            symbol,
+            close,
+            volume,
+            change_pct
+        FROM stocks_daily
+        WHERE trade_date = '{trade_date}'
+        """        
+
 
     df = pd.read_sql(query, conn)
 

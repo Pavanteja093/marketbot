@@ -1,14 +1,17 @@
 import sqlite3
-import pandas as pd
 
 conn = sqlite3.connect("market_intelligence.db")
 
-df = pd.read_sql("""
-SELECT DISTINCT trade_date
-FROM stocks_daily
-ORDER BY trade_date DESC
-""", conn)
+cursor = conn.cursor()
+
+cursor.execute("""
+SELECT name
+FROM sqlite_master
+WHERE type='table'
+ORDER BY name;
+""")
+
+for row in cursor.fetchall():
+    print(row[0])
 
 conn.close()
-
-print(df)

@@ -18,7 +18,7 @@ sys.path.append(
 
 from global_markets import get_global_markets
 from india_economy import get_india_economy
-from market_brain import get_market_brain
+from analytics.market_brain import get_market_brain
 from trading_playbook import get_trading_playbook
 from stock_reason_engine import get_stock_reasons
 

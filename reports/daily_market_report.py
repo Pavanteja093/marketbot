@@ -10,7 +10,7 @@ sys.path.append(
 from market_regime import get_market_regime
 from sector_strength import get_sector_strength
 from fii_dii_tracker import get_fii_dii
-from stock_scoring import get_stock_scores
+from analytics.stock_scoring import get_stock_scores
 
 # ----------------------------------
 # LOAD DATA

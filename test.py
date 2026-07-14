@@ -1,21 +1,28 @@
-from pathlib import Path
 import sqlite3
-import pandas as pd
 
-BASE_DIR = Path(__file__).resolve().parent
-DB_PATH = BASE_DIR / "market_intelligence.db"
+DB_PATH = r"C:\Users\pavan\Documents\Python\Marketbot\market_intelligence.db"
 
-conn = sqlite3.connect(str(DB_PATH))
+conn = sqlite3.connect(DB_PATH)
 
-df = pd.read_sql(
-    """
-    SELECT DISTINCT trade_date
-    FROM stocks_daily
-    ORDER BY trade_date
-    """,
-    conn
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS system_status (
+
+    component TEXT PRIMARY KEY,
+
+    last_successful_write TEXT,
+               
+    rows_inserted INTEGER,
+
+    last_error TEXT,
+
+    status TEXT
+
 )
+""")
 
+conn.commit()
 conn.close()
 
-print(df)
+print("system_status created")

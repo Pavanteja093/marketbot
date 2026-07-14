@@ -1,0 +1,67 @@
+======================================================================
+MASTER MORNING REPORT
+======================================================================
+
+GLOBAL MARKETS
+----------------------------------------
+       Asset    Price  Change %
+      NASDAQ 26643.33      2.91
+      S&P500  7569.16      1.85
+    DOWJONES 51892.63      1.35
+        GOLD  4357.90      3.39
+      SILVER    70.38      3.72
+       CRUDE    80.41     -5.27
+DOLLAR_INDEX    99.58     -0.17
+   INDIA_VIX    14.35     -2.50
+
+INDIA ECONOMY
+----------------------------------------
+Inflation : Under Control
+Rates     : Neutral
+
+MARKET BRAIN
+----------------------------------------
+View       : Bullish
+Regime     : BULLISH TREND
+Sector     : AUTO
+FII Flow   : Net Buyer
+Risk Score : 40/100
+
+TRADING PLAYBOOK
+----------------------------------------
+Index View   : Bullish
+Options View : Bull Call Spread / Call Buying
+Best Sector  : AUTO
+Confidence   : 80/100
+
+TOP STOCKS WITH REASONS
+----------------------------------------
+
+BPCL.NS
+Sector : ENERGY
+Score  : 80.95
+Reason : Strong price momentum, High composite score, Belongs to ENERGY sector
+
+M&M.NS
+Sector : AUTO
+Score  : 78.24
+Reason : Strong price momentum, High composite score, Belongs to AUTO sector
+
+RELIANCE.NS
+Sector : ENERGY
+Score  : 77.68
+Reason : Strong price momentum, High composite score, Belongs to ENERGY sector
+
+INFY.NS
+Sector : IT
+Score  : 67.94
+Reason : Strong price momentum, Above-average score, Belongs to IT sector
+
+MARUTI.NS
+Sector : AUTO
+Score  : 67.22
+Reason : Strong price momentum, Above-average score, Belongs to AUTO sector
+
+ACTION
+----------------------------------------
+Look for long setups.

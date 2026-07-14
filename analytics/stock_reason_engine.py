@@ -1,4 +1,4 @@
-from stock_scoring import get_stock_scores
+from analytics.stock_scoring import get_stock_scores
 
 
 def get_stock_reasons():

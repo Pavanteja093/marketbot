@@ -4,15 +4,15 @@ MASTER MORNING REPORT
 
 GLOBAL MARKETS
 ----------------------------------------
-       Asset   Price  Change %
-      NASDAQ     NaN       NaN
-      S&P500     NaN       NaN
-    DOWJONES     NaN       NaN
-        GOLD 4123.00      0.36
-      SILVER   64.62      0.03
-       CRUDE   89.17     -0.96
-DOLLAR_INDEX  100.02      0.11
-   INDIA_VIX   15.60      0.14
+       Asset    Price  Change %
+      NASDAQ 25642.01      1.88
+      S&P500  7371.24      1.43
+    DOWJONES 50774.25      1.71
+        GOLD  4157.20      1.19
+      SILVER    65.89      2.01
+       CRUDE    87.41     -2.91
+DOLLAR_INDEX    99.94     -0.01
+   INDIA_VIX    15.61     -0.11
 
 INDIA ECONOMY
 ----------------------------------------
@@ -39,27 +39,27 @@ TOP STOCKS WITH REASONS
 
 ICICIBANK.NS
 Sector : BANKING
-Score  : 96.8
+Score  : 96.19
 Reason : Strong price momentum, High composite score, Belongs to BANKING sector
 
 KOTAKBANK.NS
 Sector : BANKING
-Score  : 94.15
+Score  : 93.33
 Reason : Strong price momentum, High composite score, Belongs to BANKING sector
 
 HDFCBANK.NS
 Sector : BANKING
-Score  : 82.52
-Reason : Positive price action, High composite score, Belongs to BANKING sector
+Score  : 79.66
+Reason : High composite score, Belongs to BANKING sector
 
 SBIN.NS
 Sector : BANKING
-Score  : 81.09
-Reason : Positive price action, High composite score, Belongs to BANKING sector
+Score  : 79.05
+Reason : High composite score, Belongs to BANKING sector
 
 AXISBANK.NS
 Sector : BANKING
-Score  : 80.68
+Score  : 79.05
 Reason : Positive price action, High composite score, Belongs to BANKING sector
 
 ACTION

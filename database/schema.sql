@@ -115,3 +115,254 @@ CREATE TABLE IF NOT EXISTS signal_history (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS signal_history_v2 (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    trade_date DATE,
+
+    symbol TEXT,
+
+    sector TEXT,
+
+    intelligence_score REAL,
+
+    rank INTEGER,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS factor_history (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    trade_date DATE,
+
+    symbol TEXT,
+
+    sector TEXT,
+
+    change_pct REAL,
+
+    sector_strength REAL,
+
+    position_pct REAL,
+
+    total_score REAL,
+
+    intelligence_score REAL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(trade_date, symbol)
+);
+
+CREATE TABLE IF NOT EXISTS forward_returns (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    trade_date DATE,
+    symbol TEXT,
+
+    return_1d REAL,
+    return_5d REAL,
+    return_10d REAL,
+    return_20d REAL
+);
+
+CREATE TABLE IF NOT EXISTS prediction_history (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    trade_date DATE,
+
+    symbol TEXT,
+
+    sector TEXT,
+
+    rank INTEGER,
+
+    grade TEXT,
+
+    intelligence_score REAL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(trade_date, symbol)
+);
+
+CREATE TABLE IF NOT EXISTS prediction_outcomes (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    prediction_date DATE,
+
+    symbol TEXT,
+
+    rank INTEGER,
+
+    intelligence_score REAL,
+
+    return_5d REAL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(prediction_date, symbol)
+);
+
+CREATE TABLE IF NOT EXISTS factor_library (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    trade_date DATE,
+    symbol TEXT,
+
+    position_52w REAL,
+    breakout_distance REAL,
+    volume_expansion REAL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(trade_date, symbol)
+);
+
+CREATE TABLE IF NOT EXISTS direction_predictions (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    prediction_time TEXT,
+
+    symbol TEXT,
+
+    bullish_probability REAL,
+
+    bearish_probability REAL,
+
+    neutral_probability REAL,
+
+    confidence REAL,
+
+    direction TEXT
+
+);
+
+CREATE TABLE IF NOT EXISTS iv_analysis (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    analysis_time TEXT,
+
+    symbol TEXT,
+
+    avg_call_iv REAL,
+
+    avg_put_iv REAL,
+
+    avg_iv REAL,
+
+    iv_regime TEXT,
+
+    recommendation TEXT
+
+);
+
+CREATE TABLE IF NOT EXISTS learning_history (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    trade_date DATE,
+
+    symbol TEXT,
+
+    prediction TEXT,
+
+    actual_outcome TEXT,
+
+    confidence REAL,
+
+    strategy TEXT,
+
+    trade_quality REAL,
+
+    spot_price REAL,
+
+    next_close REAL,
+
+    next_day_return REAL,
+
+    five_day_return REAL,
+
+    correct INTEGER,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(trade_date, symbol)
+
+);
+
+CREATE TABLE IF NOT EXISTS market_prediction_history (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    trade_time TIMESTAMP,
+
+    symbol TEXT,
+
+    prediction TEXT,
+
+    confidence REAL,
+
+    strategy TEXT,
+
+    trade TEXT,
+
+    risk TEXT,
+
+    score REAL,
+
+    support REAL,
+
+    resistance REAL,
+
+    spot_price REAL,
+
+    pcr REAL,
+
+    avg_iv REAL,
+
+    processed INTEGER DEFAULT 0,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(trade_time, symbol)
+
+);
+
+CREATE TABLE IF NOT EXISTS trend_day_research (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    trade_date DATE,
+
+    index_name TEXT,
+
+    opening_gap REAL,
+
+    pcr REAL,
+
+    avg_iv REAL,
+
+    india_vix REAL,
+
+    breadth REAL,
+
+    trendiness_score REAL,
+
+    trend_day INTEGER,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(trade_date, index_name)
+
+);

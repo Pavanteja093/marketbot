@@ -1,0 +1,5 @@
+instrument_key = "BSE_INDEX|SENSEX"
+
+options_api.get_option_contracts(
+    instrument_key
+)

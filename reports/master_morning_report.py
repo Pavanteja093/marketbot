@@ -1,5 +1,4 @@
 from pathlib import Path
-import sys
 from datetime import datetime
 
 # --------------------------------------------------
@@ -8,19 +7,15 @@ from datetime import datetime
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-sys.path.append(
-    str(BASE_DIR / "analytics")
-)
-
 # --------------------------------------------------
 # IMPORTS
 # --------------------------------------------------
 
-from global_markets import get_global_markets
-from india_economy import get_india_economy
+from analytics.global_markets import get_global_markets
+from analytics.india_economy import get_india_economy
 from analytics.market_brain import get_market_brain
-from trading_playbook import get_trading_playbook
-from stock_reason_engine import get_stock_reasons
+from analytics.trading_playbook import get_trading_playbook
+from analytics.stock_reason_engine import get_stock_reasons
 
 # --------------------------------------------------
 # REPORT GENERATOR
@@ -43,6 +38,12 @@ def generate_report():
     report_lines.append("=" * 70)
     report_lines.append("MASTER MORNING REPORT")
     report_lines.append("=" * 70)
+
+    report_lines.append(
+        f"Generated : {datetime.now():%d-%m-%Y %H:%M:%S}"
+    )
+
+    report_lines.append("")
 
     # --------------------------------------------------
     # GLOBAL MARKETS
@@ -117,7 +118,15 @@ def generate_report():
     )
 
     report_lines.append(
-        f"Best Sector  : {playbook['strongest_sector']}"
+        f"Market Bias : {playbook['market_bias']}"
+    )
+
+    sector = playbook["strongest_sector"]
+
+    report_lines.append(
+        f"Best Sector  : "
+        f"{sector['sector']} ({sector['strength']:.2f}%)"
+
     )
 
     report_lines.append(
@@ -135,6 +144,7 @@ def generate_report():
     for stock in stock_reasons[:5]:
 
         report_lines.append("")
+        report_lines.append("-" * 30)
 
         report_lines.append(
             stock["symbol"]
@@ -153,15 +163,21 @@ def generate_report():
         )
 
     # --------------------------------------------------
-    # ACTION
+    # TODAY'S EXECUTION PLAN
     # --------------------------------------------------
 
     report_lines.append("")
-    report_lines.append("ACTION")
+    report_lines.append("TODAY'S EXECUTION PLAN")
     report_lines.append("-" * 40)
 
     report_lines.append(
         brain["action"]
+    )
+
+    report_lines.append("")
+
+    report_lines.append(
+        "Report generated successfully."
     )
 
     report_text = "\n".join(

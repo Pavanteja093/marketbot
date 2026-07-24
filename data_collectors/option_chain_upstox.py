@@ -66,6 +66,27 @@ def save_option_chain(symbol, instrument_key, expiry):
 
         try:
 
+            call_greeks = item.call_options.option_greeks
+            put_greeks = item.put_options.option_greeks
+
+            call_iv = call_greeks.iv if call_greeks else None
+            put_iv = put_greeks.iv if put_greeks else None
+
+            call_delta = call_greeks.delta if call_greeks else None
+            put_delta = put_greeks.delta if put_greeks else None
+
+            call_gamma = call_greeks.gamma if call_greeks else None
+            put_gamma = put_greeks.gamma if put_greeks else None
+
+            call_theta = call_greeks.theta if call_greeks else None
+            put_theta = put_greeks.theta if put_greeks else None
+
+            call_vega = call_greeks.vega if call_greeks else None
+            put_vega = put_greeks.vega if put_greeks else None
+
+            call_pop = call_greeks.pop if call_greeks else None
+            put_pop = put_greeks.pop if put_greeks else None
+
             cursor.execute("""
             INSERT INTO option_chain_history (
 
@@ -128,8 +149,8 @@ def save_option_chain(symbol, instrument_key, expiry):
 
             (
                 (item.call_options.market_data.oi or 0)
-                 -
-                 (item.call_options.market_data.prev_oi or 0)
+                -
+                (item.call_options.market_data.prev_oi or 0)
             ),
 
             (
@@ -146,23 +167,23 @@ def save_option_chain(symbol, instrument_key, expiry):
 
                 item.underlying_spot_price,
 
-                item.call_options.option_greeks.iv,
-                item.put_options.option_greeks.iv,
+                call_iv,
+                put_iv,
 
-                item.call_options.option_greeks.delta,
-                item.put_options.option_greeks.delta,
+                call_delta,
+                put_delta,
 
-                item.call_options.option_greeks.gamma,
-                item.put_options.option_greeks.gamma,
+                call_gamma,
+                put_gamma,
 
-                item.call_options.option_greeks.theta,
-                item.put_options.option_greeks.theta,
+                call_theta,
+                put_theta,
 
-                item.call_options.option_greeks.vega,
-                item.put_options.option_greeks.vega,
+                call_vega,
+                put_vega,
 
-                item.call_options.option_greeks.pop,
-                item.put_options.option_greeks.pop
+                call_pop,
+                put_pop
 
             ))
 
@@ -196,9 +217,7 @@ def collect_all_indices():
 
     for symbol, instrument_key in INDICES:
 
-        expiry = get_nearest_expiry(
-            instrument_key
-        )
+        expiry = get_nearest_expiry(instrument_key)
 
         print(
             f"\n{symbol} Nearest Expiry:",
@@ -255,9 +274,13 @@ if __name__ == "__main__":
 
        collect_all_indices()
 
-    except Exception as e:
-
+    except Exception:
         print("\nCOLLECTION FAILED")
         traceback.print_exc()
-
         update_system_status("FAILED")
+
+    finally:
+        try:
+            client.close()
+        except Exception:
+            pass

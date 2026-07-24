@@ -1,6 +1,6 @@
-from market_regime import get_market_regime
-from sector_strength import get_sector_strength
-from fii_dii_tracker import get_fii_dii
+from analytics.market_regime import get_market_regime
+from analytics.sector_strength import get_sector_strength
+from analytics.fii_dii_tracker import get_fii_dii
 from analytics.stock_scoring import get_stock_scores
 
 
@@ -59,13 +59,17 @@ def get_trading_playbook():
             "Put Buying"
         )
 
+    market_bias = regime["regime"]
+
+
     # ----------------------------------
     # SWING VIEW
     # ----------------------------------
 
-    strongest_sector = (
-        sectors.iloc[0]["Sector"]
-    )
+    strongest_sector = {
+        "sector": sectors.iloc[0]["Sector"],
+        "strength": sectors.iloc[0]["Average Change %"]
+    }
 
     focus_stocks = (
         stocks.head(5)["symbol"]
@@ -96,11 +100,29 @@ def get_trading_playbook():
 
         confidence += 20
 
+    # ----------------------------------
+    # Sector Strength
+    # ----------------------------------
+
+    if len(sectors) > 0:
+
+        top_strength = sectors.iloc[0]["Average Change %"]
+
+        if top_strength >= 1.0:
+            confidence += 10
+
+        elif top_strength <= -1.0:
+            confidence -= 10
+
+    confidence = max(0, min(confidence, 100))
+
     playbook = {
 
         "index_view": index_view,
 
         "options_view": options_view,
+
+        "market_bias": market_bias,
 
         "strongest_sector": strongest_sector,
 
@@ -110,7 +132,6 @@ def get_trading_playbook():
     }
 
     return playbook
-
 
 # ----------------------------------
 # STANDALONE EXECUTION
@@ -123,7 +144,7 @@ if __name__ == "__main__":
     print("\n" + "=" * 60)
     print("TRADING PLAYBOOK")
     print("=" * 60)
-
+    
     print(
         f"\nINDEX VIEW : "
         f"{playbook['index_view']}"
@@ -134,9 +155,11 @@ if __name__ == "__main__":
         f"{playbook['options_view']}"
     )
 
+    sector = playbook["strongest_sector"]
+
     print(
         f"STRONGEST SECTOR : "
-        f"{playbook['strongest_sector']}"
+        f"{sector['sector']} ({sector['strength']:.2f})"
     )
 
     print(

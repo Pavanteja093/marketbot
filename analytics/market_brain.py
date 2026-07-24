@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 from analytics.scoring_engine import calculate_trade_score
+from analytics.market_levels import get_market_levels
 
 DB_PATH = r"C:\Users\pavan\Documents\Python\Marketbot\market_intelligence.db"
 
@@ -59,361 +60,408 @@ def save_market_features(data):
     conn.commit()
     conn.close()                                 
 
-conn = sqlite3.connect(DB_PATH)
+def get_market_brain():
 
-symbols = ["NIFTY", "BANKNIFTY", "FINNIFTY"]
+    conn = sqlite3.connect(DB_PATH)
 
-print("\n" + "=" * 70)
-print("MARKETBOT BRAIN v1")
-print("=" * 70)
+    symbols = ["NIFTY", "BANKNIFTY", "FINNIFTY"]
 
-for symbol in symbols:
+    print("\n" + "=" * 70)
+    print("MARKETBOT BRAIN v1")
+    print("=" * 70)
 
-    query = f"""
-    SELECT *
+    results = {}
 
-    FROM option_chain_history
+    for symbol in symbols:
 
-    WHERE symbol='{symbol}'
-
-    AND trade_time=(
-
-        SELECT MAX(trade_time)
+        query = f"""
+        SELECT *
 
         FROM option_chain_history
 
         WHERE symbol='{symbol}'
-    )
-    """
 
-    df = pd.read_sql(query, conn)
+        AND trade_time = (
 
-    if df.empty:
-        continue
+            SELECT MAX(trade_time)
 
-    # ---------------------------------
-    # Spot Price
-    # ---------------------------------
+            FROM option_chain_history
 
-    spot = float(df["spot_price"].iloc[0])
+            WHERE symbol='{symbol}'
+        )
+        """
 
-    # ---------------------------------
-    # REAL PCR
-    # ---------------------------------
+        df = pd.read_sql(query, conn)
 
-    total_put = df["put_oi"].sum()
+        print("\n" + "=" * 60)
+        print(f"DEBUG : {symbol}")
 
-    total_call = df["call_oi"].sum()
+        print(df[["symbol", "strike", "spot_price"]].head())
 
-    real_pcr = total_put / total_call if total_call else 0
+        print("Rows :", len(df))
 
-    # ---------------------------------
-    # Support / Resistance
-    # ---------------------------------
+        print("Min Strike :", df["strike"].min())
+        print("Max Strike :", df["strike"].max())
 
-    support = float(df["strike"][df["put_oi"].idxmax()])
+        print("=" * 60)
 
-    resistance = float(df["strike"][df["call_oi"].idxmax()])
-    
+        if df.empty:
+            continue
 
-    # ---------------------------------
-    # Max Pain
-    # ---------------------------------
+        # ---------------------------------
+        # Spot Price
+        # ---------------------------------
 
-    df["pain"] = df["call_oi"] + df["put_oi"]
+        spot = float(df["spot_price"].iloc[0])
 
-    max_pain = float(df["strike"][df["pain"].idxmax()])
+        # ---------------------------------
+        # REAL PCR
+        # ---------------------------------
 
-    # ---------------------------------
-    # IV
-    # ---------------------------------
+        total_put = df["put_oi"].sum()
 
-    avg_iv = (
-        df["call_iv"].mean() +
-        df["put_iv"].mean()
-    ) / 2
+        total_call = df["call_oi"].sum()
 
-    # ---------------------------------
-    # Expected Move
-    # ---------------------------------
+        real_pcr = total_put / total_call if total_call else 0
 
-    import math
+        # ---------------------------------
+        # Support / Resistance
+        # ---------------------------------
 
-    days_to_expiry = 7   # temporary
+        print("\nDEBUG OPTION CHAIN")
+        print(
+            df[
+                [
+                    "strike",
+                    "call_oi",
+                    "put_oi"
+                ]
+            ].sort_values("strike")
+        )
+        
+        support = float(df["strike"][df["put_oi"].idxmax()])
 
-    expected_move = (
-        spot *
-        (avg_iv / 100) *
-        math.sqrt(days_to_expiry / 365)
-    )
+        resistance = float(df["strike"][df["call_oi"].idxmax()])
+        
 
-    upper_target = spot + expected_move
-    lower_target = spot - expected_move
+        # ---------------------------------
+        # Max Pain
+        # ---------------------------------
 
+        df["pain"] = df["call_oi"] + df["put_oi"]
 
-    # ---------------------------------
-    # Greeks
-    # ---------------------------------
+        max_pain = float(df["strike"][df["pain"].idxmax()])
 
-    delta = (
-        df["call_delta"].mean() +
-        abs(df["put_delta"].mean())
-    ) / 2
+        # ---------------------------------
+        # IV
+        # ---------------------------------
 
-    gamma = (
-        df["call_gamma"].mean() +
-        df["put_gamma"].mean()
-    ) / 2
+        avg_iv = (
+            df["call_iv"].mean() +
+            df["put_iv"].mean()
+        ) / 2
 
-    theta = (
-        abs(df["call_theta"].mean()) +
-        abs(df["put_theta"].mean())
-    ) / 2
+        # ---------------------------------
+        # Expected Move
+        # ---------------------------------
 
-    vega = (
-        df["call_vega"].mean() +
-        df["put_vega"].mean()
-    ) / 2
+        import math
 
-    # ---------------------------------
-    # TRADE QUALITY SCORE
-    # ---------------------------------
+        days_to_expiry = 7   # temporary
 
-    score = 50
+        expected_move = (
+            spot *
+            (avg_iv / 100) *
+            math.sqrt(days_to_expiry / 365)
+        )
 
-    reasons = []
+        upper_target = spot + expected_move
+        lower_target = spot - expected_move
 
-    score_breakdown = []
 
-    # PCR
+        # ---------------------------------
+        # Greeks
+        # ---------------------------------
 
-    if real_pcr > 1:
-        score += 15
-        score_breakdown.append(("PCR", +15))
-        reasons.append("Bullish PCR")
-    else:
-        score -= 15
-        score_breakdown.append(("PCR", +15))
-        reasons.append("Bearish PCR")
+        delta = (
+            df["call_delta"].mean() +
+            abs(df["put_delta"].mean())
+        ) / 2
 
-    # Support / Resistance
+        gamma = (
+            df["call_gamma"].mean() +
+            df["put_gamma"].mean()
+        ) / 2
 
-    distance_support = abs(spot - support)
-    distance_resistance = abs(resistance - spot)
+        theta = (
+            abs(df["call_theta"].mean()) +
+            abs(df["put_theta"].mean())
+        ) / 2
 
-    if distance_support < distance_resistance:
-        score += 10
-        reasons.append("Closer to Support")
-    else:
-        score -= 20
-        score_breakdown.append(("Support Position", -20))
-        reasons.append("Closer to Resistance")
-    
-    reward = abs(resistance - spot)
-    risk_points = abs(spot - support)
+        vega = (
+            df["call_vega"].mean() +
+            df["put_vega"].mean()
+        ) / 2
 
-    rr = reward / risk_points if risk_points else 0
+        # ---------------------------------
+        # TRADE QUALITY SCORE
+        # ---------------------------------
 
-    # Market Location
+        score = 50
 
-    range_width = resistance - support
-    position = (spot - support) / range_width if range_width else 0
+        reasons = []
 
-    if position < 0.3:
-        location = "LOWER RANGE"
+        score_breakdown = []
 
-    elif position > 0.7:
-        location = "UPPER RANGE"
+        # PCR
 
-    else:
-        location = "MIDDLE RANGE"
-
-    # IV
-
-    if avg_iv > 25:
-        score += 10
-        reasons.append("High IV")
-    else:
-        reasons.append("Normal IV")
-
-    # Gamma
-
-    if gamma < 0.02:
-        score += 5
-        reasons.append("Low Gamma")
-
-    # Theta
-
-    if theta > 0.5:
-        score += 10
-        reasons.append("High Theta")
-
-    # ---------------------------------
-    # Reward / Risk
-    # ---------------------------------
-
-    if rr >= 2:
-        score += 10
-        reasons.append("Excellent Reward/Risk")
-
-    elif rr >= 1:
-        score += 5
-        reasons.append("Good Reward/Risk")
-
-    else:
-        score -= 10
-        reasons.append("Poor Reward/Risk")
-
-    score = max(0, min(score, 100))
-
-    # ---------------------------------
-    # Decision
-    # ---------------------------------
-
-    if score >= 80:
-
-        bias = "BULLISH"
-        strategy = "Bull Put Spread"
-        confidence = score
-
-    elif score >= 65:
-
-        bias = "SLIGHTLY BULLISH"
-        strategy = "Iron Condor"
-        confidence = score
-
-    elif score <= 20:
-
-        bias = "BEARISH"
-        strategy = "Bear Call Spread"
-        confidence = 100 - score
-
-    elif score <= 35:
-
-        bias = "SLIGHTLY BEARISH"
-        strategy = "Iron Condor"
-        confidence = 100 - score
-
-    else:
-
-        bias = "NEUTRAL"
-        strategy = "Wait"
-        confidence = 60
-
-    if score >= 80:
-        risk = "LOW"
-
-    elif score >= 60:
-        risk = "MEDIUM"
-
-    else:
-        risk = "HIGH"
-
-    if score >= 75:
-        trade = "YES"
-
-    elif score >= 60:
-
-        if distance_support < distance_resistance:
-            trade = "WAIT FOR BOUNCE FROM SUPPORT"
+        if real_pcr > 1:
+            score += 15
+            score_breakdown.append(("PCR", +15))
+            reasons.append("Bullish PCR")
         else:
-            trade = "WAIT FOR BREAKOUT ABOVE RESISTANCE"
+            score -= 15
+            score_breakdown.append(("PCR", +15))
+            reasons.append("Bearish PCR")
+
+        # Support / Resistance
+
+        levels = get_market_levels(df)
+
+        if not levels:
+            continue
+
+        support = levels["support"]
+        resistance = levels["resistance"]
+
+        distance_support = abs(spot - support)
+        distance_resistance = abs(resistance - spot)
+
+        risk_distance = max(distance_support, 1)
+        reward_distance = max(distance_resistance, 1)
+
+        rr = reward_distance / risk_distance
+
+        # Market Location
+
+        range_width = resistance - support
+        position = (spot - support) / range_width if range_width else 0
+
+        if position < 0.3:
+            location = "LOWER RANGE"
+
+        elif position > 0.7:
+            location = "UPPER RANGE"
+
+        else:
+            location = "MIDDLE RANGE"
+
+        # IV
+
+        if avg_iv > 25:
+            score += 10
+            reasons.append("High IV")
+        else:
+            reasons.append("Normal IV")
+
+        # Gamma
+
+        if gamma < 0.02:
+            score += 5
+            reasons.append("Low Gamma")
+
+        # Theta
+
+        if theta > 0.5:
+            score += 10
+            reasons.append("High Theta")
+
+        # ---------------------------------
+        # Reward / Risk
+        # ---------------------------------
+
+        if rr >= 2:
+            score += 10
+            reasons.append("Excellent Reward/Risk")
+
+        elif rr >= 1:
+            score += 5
+            reasons.append("Good Reward/Risk")
+
+        else:
+            score -= 10
+            reasons.append("Poor Reward/Risk")
+
+        score = max(0, min(score, 100))
+
+        # ---------------------------------
+        # Decision
+        # ---------------------------------
+
+        if score >= 80:
+
+            bias = "BULLISH"
+            strategy = "Bull Put Spread"
+            confidence = score
+
+        elif score >= 65:
+
+            bias = "SLIGHTLY BULLISH"
+            strategy = "Iron Condor"
+            confidence = score
+
+        elif score <= 20:
+
+            bias = "BEARISH"
+            strategy = "Bear Call Spread"
+            confidence = 100 - score
+
+        elif score <= 35:
+
+            bias = "SLIGHTLY BEARISH"
+            strategy = "Iron Condor"
+            confidence = 100 - score
+
+        else:
+
+            bias = "NEUTRAL"
+            strategy = "Wait"
+            confidence = 60
+
+        if score >= 80:
+            risk = "LOW"
+
+        elif score >= 60:
+            risk = "MEDIUM"
+
+        else:
+            risk = "HIGH"
+
+        if score >= 75:
+            trade = "YES"
+
+        elif score >= 60:
+
+            if distance_support < distance_resistance:
+                trade = "WAIT FOR BOUNCE FROM SUPPORT"
+            else:
+                trade = "WAIT FOR BREAKOUT ABOVE RESISTANCE"
 
 
 
-    else:
-        trade = "NO"
+        else:
+            trade = "NO"
 
-    save_market_features({
+        save_market_features({
 
-    "trade_time": df["trade_time"].iloc[0],
+        "trade_time": df["trade_time"].iloc[0],
 
-    "symbol": symbol,
+        "symbol": symbol,
 
-    "spot_price": spot,
+        "spot_price": spot,
 
-    "avg_iv": avg_iv,
+        "avg_iv": avg_iv,
 
-    "iv_regime": "HIGH VOLATILITY" if avg_iv > 25 else "LOW VOLATILITY",
+        "iv_regime": "HIGH VOLATILITY" if avg_iv > 25 else "LOW VOLATILITY",
 
-    "strategy": strategy,
+        "strategy": strategy,
 
-    "real_pcr": real_pcr,
+        "real_pcr": real_pcr,
 
-    "support": support,
+        "support": support,
 
-    "resistance": resistance,
+        "resistance": resistance,
 
-    "max_pain": max_pain,
+        "max_pain": max_pain,
 
-    "delta": delta,
+        "delta": delta,
 
-    "gamma": gamma,
+        "gamma": gamma,
 
-    "theta": theta,
+        "theta": theta,
 
-    "vega": vega,
+        "vega": vega,
 
-    "market_bias": bias,
+        "market_bias": bias,
 
-    "confidence": confidence
+        "confidence": confidence
 
-})
+    })
 
-    print("\n" + "=" * 70)
+        print("\n" + "=" * 70)
 
-    print(symbol)
+        print(symbol)
 
-    print("=" * 70)
+        print("=" * 70)
 
-    print(f"Spot Price      : {spot:.2f}")
+        print(f"Spot Price      : {spot:.2f}")
 
-    print(f"Real PCR        : {real_pcr:.2f}")
+        print(f"Real PCR        : {real_pcr:.2f}")
 
-    print(f"Support         : {support}")
+        print(f"Support         : {support}")
 
-    print(f"Resistance      : {resistance}")
+        print(f"Resistance      : {resistance}")
 
-    print(f"Reward/Risk    : {rr:.2f}")
+        print(f"Reward/Risk    : {rr:.2f}")
 
-    print(f"Max Pain        : {max_pain}")
+        print(f"Max Pain        : {max_pain}")
 
-    print(f"Market Location: {location}")
+        print(f"Market Location: {location}")
 
-    print(f"Average IV      : {avg_iv:.2f}")
+        print(f"Average IV      : {avg_iv:.2f}")
 
-    print(f"Expected Move   : ±{expected_move:.2f}")
-    
-    print(f"Expected Range  : {lower_target:.2f} - {upper_target:.2f}")
+        print(f"Expected Move   : ±{expected_move:.2f}")
+        
+        print(f"Expected Range  : {lower_target:.2f} - {upper_target:.2f}")
 
-    print(f"Delta           : {delta:.4f}")
+        print(f"Delta           : {delta:.4f}")
 
-    print(f"Gamma           : {gamma:.4f}")
+        print(f"Gamma           : {gamma:.4f}")
 
-    print(f"Theta           : {theta:.4f}")
+        print(f"Theta           : {theta:.4f}")
 
-    print(f"Vega            : {vega:.4f}")
+        print(f"Vega            : {vega:.4f}")
 
-    print("\nMarket Bias")
+        print("\nMarket Bias")
 
-    print(bias)
+        print(bias)
 
-    print(f"\nTrade Quality : {score}/100")
+        print(f"\nTrade Quality : {score}/100")
 
-    print(f"Risk            : {risk}")
+        print(f"Risk            : {risk}")
 
-    print(f"Trade Decision : {trade}")
+        print(f"Trade Decision : {trade}")
 
-    print("\nRecommended Strategy")
+        print("\nRecommended Strategy")
 
-    print(strategy)
+        print(strategy)
 
-    print(f"\nConfidence : {confidence}%")
+        print(f"\nConfidence : {confidence}%")
 
-    print("\nReasons")
+        print("\nReasons")
 
-    for r in reasons:
+        for r in reasons:
 
-        print("-", r)
+            print("-", r)
 
-conn.close()
+        results[symbol] = {
+            "spot_price": spot,
+            "support": support,
+            "resistance": resistance,
+            "max_pain": max_pain,
+            "market_bias": bias,
+            "strategy": strategy,
+            "confidence": confidence,
+            "expected_move": expected_move,
+            "upper_target": upper_target,
+            "lower_target": lower_target,
+            "reward_risk": rr,
+            "market_location": location,
+        }
+
+    conn.close()
+    return results
+
+
+if __name__ == "__main__":
+    get_market_brain()

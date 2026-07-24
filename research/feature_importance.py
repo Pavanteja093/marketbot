@@ -10,7 +10,8 @@ DB_PATH = BASE_DIR / "market_intelligence.db"
 class FeatureImportance:
 
     def __init__(self):
-        pass
+        self.results = {}
+        self.verbose = True
 
     def load_data(self):
         conn = sqlite3.connect(str(DB_PATH))
@@ -21,6 +22,8 @@ class FeatureImportance:
         )
 
         conn.close()
+
+        self.results["sample_size"] = len(df)
 
         return df
 
@@ -81,6 +84,8 @@ class FeatureImportance:
             ascending=False
         )
 
+        self.results["importance"] = importance
+
         return importance
 
     def print_rankings(self, importance):
@@ -122,10 +127,11 @@ class FeatureImportance:
                 f"   {recommendation}"
             )
 
-    def run(self):
+    def run(self, verbose=True):
+
+        self.verbose = verbose
 
         print("\n" + "=" * 60)
-
         print("FEATURE IMPORTANCE")
         print("=" * 60)
 
@@ -136,6 +142,8 @@ class FeatureImportance:
         importance = self.rank_features(df)
 
         self.print_rankings(importance)
+
+        return self.results
 
 if __name__ == "__main__":
 

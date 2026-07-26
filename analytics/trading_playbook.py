@@ -1,7 +1,7 @@
 from analytics.market_regime import get_market_regime
 from analytics.sector_strength import get_sector_strength
 from analytics.fii_dii_tracker import get_fii_dii
-from analytics.stock_scoring import get_stock_scores
+from analytics.stock_scoring_v2 import get_stock_scores
 
 
 def get_trading_playbook():

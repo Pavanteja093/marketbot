@@ -2,16 +2,22 @@
 Feature Store
 """
 
+import pandas as pd
+
 
 class FeatureStore:
 
     def __init__(self):
-        self._data = None
+        self.data = pd.DataFrame()
 
-    def save(self, dataframe):
+    def save(self, df):
 
-        self._data = dataframe.copy()
+        self.data = df.copy()
 
     def load(self):
 
-        return self._data
+        return self.data.copy()
+
+    def clear(self):
+
+        self.data = pd.DataFrame()

@@ -2,8 +2,12 @@
 Feature Engineering Version
 """
 
-FEATURE_ENGINEERING_VERSION = "1.0.0"
+FRAMEWORK_VERSION = "1.0.0"
 
-SUPPORTED_MODULES = [
-    "price",
-]
+MODULE_VERSIONS = {
+
+    "price": "1.0.0",
+
+    "trend": "1.0.0",
+
+}

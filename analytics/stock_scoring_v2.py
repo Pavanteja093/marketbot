@@ -167,6 +167,13 @@ def get_stock_scores_v2(trade_date=None):
 # STANDALONE EXECUTION
 # ----------------------------------
 
+def get_stock_scores(trade_date=None):
+    """
+    Compatibility wrapper for MarketBot V1.
+    Returns the production Stock Scoring V2 dataframe.
+    """
+    return get_stock_scores_v2(trade_date)
+
 if __name__ == "__main__":
 
     df = get_stock_scores_v2()

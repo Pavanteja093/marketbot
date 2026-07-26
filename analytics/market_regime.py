@@ -11,7 +11,7 @@ def get_market_regime():
     conn = sqlite3.connect(str(DB_PATH))
 
     # -----------------------------------
-    # LATEST NIFTY DATA
+    # LATEST NIFTY DAsTA
     # -----------------------------------
 
     index_query = """

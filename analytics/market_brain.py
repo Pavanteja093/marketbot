@@ -66,10 +66,6 @@ def get_market_brain():
 
     symbols = ["NIFTY", "BANKNIFTY", "FINNIFTY"]
 
-    print("\n" + "=" * 70)
-    print("MARKETBOT BRAIN v1")
-    print("=" * 70)
-
     results = {}
 
     for symbol in symbols:
@@ -93,18 +89,6 @@ def get_market_brain():
 
         df = pd.read_sql(query, conn)
 
-        print("\n" + "=" * 60)
-        print(f"DEBUG : {symbol}")
-
-        print(df[["symbol", "strike", "spot_price"]].head())
-
-        print("Rows :", len(df))
-
-        print("Min Strike :", df["strike"].min())
-        print("Max Strike :", df["strike"].max())
-
-        print("=" * 60)
-
         if df.empty:
             continue
 
@@ -127,17 +111,6 @@ def get_market_brain():
         # ---------------------------------
         # Support / Resistance
         # ---------------------------------
-
-        print("\nDEBUG OPTION CHAIN")
-        print(
-            df[
-                [
-                    "strike",
-                    "call_oi",
-                    "put_oi"
-                ]
-            ].sort_values("strike")
-        )
         
         support = float(df["strike"][df["put_oi"].idxmax()])
 
@@ -203,29 +176,6 @@ def get_market_brain():
             df["put_vega"].mean()
         ) / 2
 
-        # ---------------------------------
-        # TRADE QUALITY SCORE
-        # ---------------------------------
-
-        score = 50
-
-        reasons = []
-
-        score_breakdown = []
-
-        # PCR
-
-        if real_pcr > 1:
-            score += 15
-            score_breakdown.append(("PCR", +15))
-            reasons.append("Bullish PCR")
-        else:
-            score -= 15
-            score_breakdown.append(("PCR", +15))
-            reasons.append("Bearish PCR")
-
-        # Support / Resistance
-
         levels = get_market_levels(df)
 
         if not levels:
@@ -242,115 +192,34 @@ def get_market_brain():
 
         rr = reward_distance / risk_distance
 
-        # Market Location
-
         range_width = resistance - support
         position = (spot - support) / range_width if range_width else 0
 
         if position < 0.3:
             location = "LOWER RANGE"
-
         elif position > 0.7:
             location = "UPPER RANGE"
-
         else:
             location = "MIDDLE RANGE"
 
-        # IV
+        decision = calculate_trade_score(
+            spot=spot,
+            support=support,
+            resistance=resistance,
+            real_pcr=real_pcr,
+            avg_iv=avg_iv,
+            gamma=gamma,
+            theta=theta,
+            rr=rr
+        )
 
-        if avg_iv > 25:
-            score += 10
-            reasons.append("High IV")
-        else:
-            reasons.append("Normal IV")
-
-        # Gamma
-
-        if gamma < 0.02:
-            score += 5
-            reasons.append("Low Gamma")
-
-        # Theta
-
-        if theta > 0.5:
-            score += 10
-            reasons.append("High Theta")
-
-        # ---------------------------------
-        # Reward / Risk
-        # ---------------------------------
-
-        if rr >= 2:
-            score += 10
-            reasons.append("Excellent Reward/Risk")
-
-        elif rr >= 1:
-            score += 5
-            reasons.append("Good Reward/Risk")
-
-        else:
-            score -= 10
-            reasons.append("Poor Reward/Risk")
-
-        score = max(0, min(score, 100))
-
-        # ---------------------------------
-        # Decision
-        # ---------------------------------
-
-        if score >= 80:
-
-            bias = "BULLISH"
-            strategy = "Bull Put Spread"
-            confidence = score
-
-        elif score >= 65:
-
-            bias = "SLIGHTLY BULLISH"
-            strategy = "Iron Condor"
-            confidence = score
-
-        elif score <= 20:
-
-            bias = "BEARISH"
-            strategy = "Bear Call Spread"
-            confidence = 100 - score
-
-        elif score <= 35:
-
-            bias = "SLIGHTLY BEARISH"
-            strategy = "Iron Condor"
-            confidence = 100 - score
-
-        else:
-
-            bias = "NEUTRAL"
-            strategy = "Wait"
-            confidence = 60
-
-        if score >= 80:
-            risk = "LOW"
-
-        elif score >= 60:
-            risk = "MEDIUM"
-
-        else:
-            risk = "HIGH"
-
-        if score >= 75:
-            trade = "YES"
-
-        elif score >= 60:
-
-            if distance_support < distance_resistance:
-                trade = "WAIT FOR BOUNCE FROM SUPPORT"
-            else:
-                trade = "WAIT FOR BREAKOUT ABOVE RESISTANCE"
-
-
-
-        else:
-            trade = "NO"
+        score = decision["score"]
+        bias = decision["bias"]
+        confidence = decision["confidence"]
+        risk = decision["risk"]
+        trade = decision["trade"]
+        strategy = decision["strategy"]
+        reasons = decision["reasons"]
 
         save_market_features({
 
@@ -388,75 +257,39 @@ def get_market_brain():
 
     })
 
-        print("\n" + "=" * 70)
-
-        print(symbol)
-
-        print("=" * 70)
-
-        print(f"Spot Price      : {spot:.2f}")
-
-        print(f"Real PCR        : {real_pcr:.2f}")
-
-        print(f"Support         : {support}")
-
-        print(f"Resistance      : {resistance}")
-
-        print(f"Reward/Risk    : {rr:.2f}")
-
-        print(f"Max Pain        : {max_pain}")
-
-        print(f"Market Location: {location}")
-
-        print(f"Average IV      : {avg_iv:.2f}")
-
-        print(f"Expected Move   : ±{expected_move:.2f}")
-        
-        print(f"Expected Range  : {lower_target:.2f} - {upper_target:.2f}")
-
-        print(f"Delta           : {delta:.4f}")
-
-        print(f"Gamma           : {gamma:.4f}")
-
-        print(f"Theta           : {theta:.4f}")
-
-        print(f"Vega            : {vega:.4f}")
-
-        print("\nMarket Bias")
-
-        print(bias)
-
-        print(f"\nTrade Quality : {score}/100")
-
-        print(f"Risk            : {risk}")
-
-        print(f"Trade Decision : {trade}")
-
-        print("\nRecommended Strategy")
-
-        print(strategy)
-
-        print(f"\nConfidence : {confidence}%")
-
-        print("\nReasons")
-
-        for r in reasons:
-
-            print("-", r)
-
         results[symbol] = {
+            
+            "symbol": symbol,
+
             "spot_price": spot,
+
+            "real_pcr": real_pcr,
+
             "support": support,
             "resistance": resistance,
             "max_pain": max_pain,
-            "market_bias": bias,
-            "strategy": strategy,
-            "confidence": confidence,
+
+            "avg_iv": avg_iv,
+
             "expected_move": expected_move,
             "upper_target": upper_target,
             "lower_target": lower_target,
+
+            "delta": delta,
+            "gamma": gamma,
+            "theta": theta,
+            "vega": vega,
+
             "reward_risk": rr,
             "market_location": location,
+
+            "score": score,
+            "bias": bias,
+            "confidence": confidence,
+            "risk": risk,
+            "trade": trade,
+            "strategy": strategy,
+            "reasons": reasons
         }
 
     conn.close()
@@ -464,4 +297,7 @@ def get_market_brain():
 
 
 if __name__ == "__main__":
-    get_market_brain()
+    from pprint import pprint
+
+    results = get_market_brain()
+    pprint(results)

@@ -48,8 +48,33 @@ def fetch_index_data(index_name, symbol):
         / previous_close
     ) * 100
 
+    trade_date = pd.to_datetime(latest.name).date()
+
+    print(type(latest.name))
+    print(latest.name)
+
+    print(f"\nDownloading {index_name} ({symbol})")
+
+    df = yf.download(
+        symbol,
+        period="5d",
+        interval="1d",
+        auto_adjust=False,
+        progress=False
+    )
+
+    print(df)
+
+    print("Rows:", len(df))
+
+    if len(df) < 2:
+        print("Not enough rows")
+        return None
+
     return {
-        "trade_date": datetime.now().date(),
+
+        "trade_date": trade_date,
+
         "index_name": index_name,
 
         "open": float(latest["Open"].iloc[0]),
@@ -59,10 +84,17 @@ def fetch_index_data(index_name, symbol):
         "previous_close": previous_close,
         "close": close_price,
 
+        "price_change": round(
+            close_price - previous_close,
+            2
+        ),
 
-        "price_change": round(close_price - previous_close, 2),
-        "change_pct": round(change_pct, 2)
-    }
+        "change_pct": round(
+            change_pct,
+            2
+        )
+
+    }    
 
 
 def save_to_db(data):
@@ -120,6 +152,9 @@ def main():
             save_to_db(data)
             print(f"Saved: {index_name}")
 
+# =====================================================
+# MAIN
+# =====================================================
 
 if __name__ == "__main__":
     main()

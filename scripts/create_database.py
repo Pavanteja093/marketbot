@@ -5,7 +5,7 @@ from pathlib import Path
 # DATABASE PATH
 # --------------------------------------------------
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 DB_PATH = BASE_DIR / "market_intelligence.db"
 
@@ -25,18 +25,15 @@ with open(
 
     sql_script = f.read()
 
-print("SQL Loaded:")
-print(sql_script)
+print("Database schema loaded successfully.")
+
+cursor = conn.cursor()
 
 conn.executescript(sql_script)
-
-conn.commit()
 
 # --------------------------------------------------
 # VERIFY TABLES
 # --------------------------------------------------
-
-cursor = conn.cursor()
 
 cursor.execute("""
 SELECT name
@@ -52,6 +49,7 @@ for table in tables:
 
     print(table)
 
+conn.commit()
 conn.close()
 
 print("\nDatabase created successfully")

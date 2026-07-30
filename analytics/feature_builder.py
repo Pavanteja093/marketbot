@@ -1,12 +1,7 @@
 from database.repository import (
     get_latest_option_chain
 )
-
-import sqlite3
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-DB_PATH = BASE_DIR / "market_intelligence.db"
+from database.db import get_connection
 
 
 def save_features(
@@ -18,7 +13,7 @@ def save_features(
     strategy
 ):
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
 
     cursor = conn.cursor()
 
@@ -52,7 +47,7 @@ def save_features(
 
 def build_features():
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
 
     cursor = conn.cursor()
 

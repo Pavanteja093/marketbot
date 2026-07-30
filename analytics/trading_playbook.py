@@ -1,4 +1,4 @@
-from analytics.market_regime import get_market_regime
+from database.repository import Repository
 from analytics.sector_strength import get_sector_strength
 from analytics.fii_dii_tracker import get_fii_dii
 from analytics.stock_scoring_v2 import get_stock_scores
@@ -10,7 +10,7 @@ def get_trading_playbook():
     # LOAD DATA
     # ----------------------------------
 
-    regime = get_market_regime()
+    market = Repository.market_state("NIFTY")
 
     sectors = get_sector_strength()
 
@@ -22,11 +22,11 @@ def get_trading_playbook():
     # INDEX VIEW
     # ----------------------------------
 
-    if regime["regime"] == "BULLISH TREND":
+    if market.market_bias == "BULLISH":
 
         index_view = "Bullish"
 
-    elif regime["regime"] == "BEARISH TREND":
+    elif market.market_bias == "BEARISH":
 
         index_view = "Bearish"
 
@@ -38,14 +38,14 @@ def get_trading_playbook():
     # OPTIONS VIEW
     # ----------------------------------
 
-    if regime["regime"] == "RANGE BOUND":
+    if market.recommended_strategy == "IRON CONDOR":
 
         options_view = (
             "Prefer Option Selling / "
             "Non-Directional Strategies"
         )
 
-    elif regime["regime"] == "BULLISH TREND":
+    elif market.market_bias == "BULLISH":
 
         options_view = (
             "Bull Call Spread / "
@@ -59,7 +59,7 @@ def get_trading_playbook():
             "Put Buying"
         )
 
-    market_bias = regime["regime"]
+    market_bias = market.market_bias
 
 
     # ----------------------------------
@@ -92,11 +92,11 @@ def get_trading_playbook():
 
             confidence -= 10
 
-    if regime["regime"] == "BULLISH TREND":
+    if market.market_bias == "BULLISH":
 
         confidence += 20
 
-    elif regime["regime"] == "BEARISH TREND":
+    elif market.market_bias == "BEARISH":
 
         confidence += 20
 

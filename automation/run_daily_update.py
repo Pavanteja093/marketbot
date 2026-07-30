@@ -90,10 +90,6 @@ LEARNING = [
         BASE_DIR / "learning" / "outcome_tracker.py"
     ),
 
-    (
-        "Outcome Tracker",
-        BASE_DIR / "learning" / "outcome_tracker.py"
-    )
 ]
 
 PHASES = [

@@ -1,15 +1,9 @@
-import sqlite3
 import pandas as pd
-from pathlib import Path
 from database.db import get_connection
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-DB_PATH = BASE_DIR / "market_intelligence.db"
-
 
 def get_latest_option_chain(symbol):
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
 
     query = """
     SELECT *
@@ -46,7 +40,7 @@ def save_iv_analysis(
     recommended_strategy
 ):
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
 
     cursor = conn.cursor()
 
@@ -77,7 +71,7 @@ def save_iv_analysis(
 
 def get_latest_market_features(symbol):
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
 
     query = """
     SELECT *
@@ -101,7 +95,7 @@ def get_latest_market_features(symbol):
 
     return df
 
-from core.market_state import MarketState
+from models.market_state import MarketState
 
 
 def get_market_state(symbol):
@@ -129,7 +123,11 @@ def get_market_state(symbol):
             iv_regime,
             market_bias,
             confidence,
-            strategy
+            strategy,
+            expected_move,
+            reward_risk,
+            market_location,
+            trade_quality
         FROM market_features
         WHERE symbol = ?
         ORDER BY trade_time DESC
@@ -161,10 +159,10 @@ def get_market_state(symbol):
         theta=row[10],
         vega=row[11],
 
-        reward_risk=0.0,
-        market_location="UNKNOWN",
-        expected_move=0.0,
-        trade_quality=0.0,
+        expected_move=row[16],
+        reward_risk=row[17],
+        market_location=row[18],
+        trade_quality=row[19],
 
         iv_regime=row[12],
 
@@ -172,3 +170,118 @@ def get_market_state(symbol):
         confidence=row[14],
         recommended_strategy=row[15]
 )
+
+class Repository:
+
+    @staticmethod
+    def market_state(symbol):
+        return get_market_state(symbol)
+
+    @staticmethod
+    def option_chain(symbol):
+        return get_latest_option_chain(symbol)
+
+    @staticmethod
+    def market_features(symbol):
+        return get_latest_market_features(symbol)
+
+
+    @staticmethod
+    def all_market_states():
+        """
+        Returns the latest MarketState for every supported index.
+        """
+
+        symbols = [
+            "NIFTY",
+            "BANKNIFTY",
+            "FINNIFTY"
+        ]
+
+        states = {}
+
+        for symbol in symbols:
+            try:
+                states[symbol] = Repository.market_state(symbol)
+            except Exception as e:
+                print(f"Unable to load {symbol}: {e}")
+
+        return states
+
+    @staticmethod
+    def latest_indices():
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT
+                index_name,
+                open,
+                high,
+                low,
+                close,
+                change_pct
+            FROM indices_daily
+            WHERE trade_date = (
+                SELECT MAX(trade_date)
+                FROM indices_daily
+            )
+            ORDER BY index_name
+        """)
+
+        rows = rows = cursor.fetchall()
+        conn.close()
+
+        return rows
+
+    @staticmethod
+    def top_gainers(limit=5):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT
+                symbol,
+                close,
+                price_change,
+                change_pct
+            FROM stocks_daily
+            WHERE trade_date = (
+                SELECT MAX(trade_date)
+                FROM stocks_daily
+            )
+            ORDER BY change_pct DESC
+            LIMIT ?
+        """, (limit,))
+
+        rows = rows = cursor.fetchall()
+        conn.close()
+
+        return rows
+
+    @staticmethod
+    def top_losers(limit=5):
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT
+                symbol,
+                close,
+                price_change,
+                change_pct
+            FROM stocks_daily
+            WHERE trade_date = (
+                SELECT MAX(trade_date)
+                FROM stocks_daily
+            )
+            ORDER BY change_pct ASC
+            LIMIT ?
+        """, (limit,))
+
+        rows = rows = cursor.fetchall()
+        conn.close()
+
+        return rows
+
+    

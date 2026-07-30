@@ -39,8 +39,9 @@ def calculate_forward_returns():
 
     df = pd.read_sql(query, conn)
 
-    df["trade_date"] = pd.to_datetime(
-        df["trade_date"]
+    df["trade_date"] = (
+        pd.to_datetime(df["trade_date"])
+        .dt.strftime("%Y-%m-%d")
     )
 
     # -----------------------------

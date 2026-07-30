@@ -45,7 +45,24 @@ CREATE TABLE IF NOT EXISTS trade_performance (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 """)
+conn.execute("""
+CREATE TABLE IF NOT EXISTS market_features (
 
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    expected_move REAL,
+
+    reward_risk REAL,
+
+    market_location TEXT,
+
+    trade_quality REAL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+""")
+
+conn.execute("""
 CREATE TABLE IF NOT EXISTS option_snapshots (
 
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -69,8 +86,8 @@ CREATE TABLE IF NOT EXISTS option_snapshots (
     ltp REAL,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
+)
+""")
 conn.commit()
 
 print("Tables created successfully.")

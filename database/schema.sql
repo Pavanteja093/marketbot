@@ -1,8 +1,8 @@
-CREATE TABLE IF NOT EXISTS indices_daily (
+CREATE TABLE indices_daily (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     trade_date DATE,
-    symbol TEXT,
+    index_name TEXT,
 
     open REAL,
     high REAL,
@@ -14,9 +14,8 @@ CREATE TABLE IF NOT EXISTS indices_daily (
     price_change REAL,
     change_pct REAL,
 
-    volume INTEGER,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(trade_date,index_name)
 );
 
 CREATE TABLE IF NOT EXISTS indices_intraday (
@@ -35,7 +34,7 @@ CREATE TABLE IF NOT EXISTS stocks_daily (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     trade_date DATE,
-    symbol TEXT,
+    index_name TEXT,
 
     open REAL,
     high REAL,
@@ -105,7 +104,7 @@ CREATE TABLE IF NOT EXISTS signal_history (
 
     trade_date DATE,
 
-    symbol TEXT,
+    index_name TEXT,
 
     sector TEXT,
 
@@ -122,7 +121,7 @@ CREATE TABLE IF NOT EXISTS signal_history_v2 (
 
     trade_date DATE,
 
-    symbol TEXT,
+    index_name TEXT,
 
     sector TEXT,
 
@@ -139,7 +138,7 @@ CREATE TABLE IF NOT EXISTS factor_history (
 
     trade_date DATE,
 
-    symbol TEXT,
+    index_name TEXT,
 
     sector TEXT,
 
@@ -153,6 +152,10 @@ CREATE TABLE IF NOT EXISTS factor_history (
 
     intelligence_score REAL,
 
+    relative_strength REAL,
+
+    rs_grade TEXT,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     UNIQUE(trade_date, symbol)
@@ -163,7 +166,7 @@ CREATE TABLE IF NOT EXISTS forward_returns (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     trade_date DATE,
-    symbol TEXT,
+    index_name TEXT,
 
     return_1d REAL,
     return_5d REAL,
@@ -177,7 +180,7 @@ CREATE TABLE IF NOT EXISTS prediction_history (
 
     trade_date DATE,
 
-    symbol TEXT,
+    index_name TEXT,
 
     sector TEXT,
 
@@ -198,7 +201,7 @@ CREATE TABLE IF NOT EXISTS prediction_outcomes (
 
     prediction_date DATE,
 
-    symbol TEXT,
+    index_name TEXT,
 
     rank INTEGER,
 
@@ -216,7 +219,7 @@ CREATE TABLE IF NOT EXISTS factor_library (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     trade_date DATE,
-    symbol TEXT,
+    index_name TEXT,
 
     position_52w REAL,
     breakout_distance REAL,
@@ -233,7 +236,7 @@ CREATE TABLE IF NOT EXISTS direction_predictions (
 
     prediction_time TEXT,
 
-    symbol TEXT,
+    index_name TEXT,
 
     bullish_probability REAL,
 
@@ -253,7 +256,7 @@ CREATE TABLE IF NOT EXISTS iv_analysis (
 
     analysis_time TEXT,
 
-    symbol TEXT,
+    index_name TEXT,
 
     avg_call_iv REAL,
 
@@ -273,7 +276,7 @@ CREATE TABLE IF NOT EXISTS learning_history (
 
     trade_date DATE,
 
-    symbol TEXT,
+    index_name TEXT,
 
     prediction TEXT,
 
@@ -307,7 +310,7 @@ CREATE TABLE IF NOT EXISTS market_prediction_history (
 
     trade_time TIMESTAMP,
 
-    symbol TEXT,
+    index_name TEXT,
 
     prediction TEXT,
 
@@ -364,5 +367,31 @@ CREATE TABLE IF NOT EXISTS trend_day_research (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     UNIQUE(trade_date, index_name)
+
+);
+
+CREATE TABLE IF NOT EXISTS market_regime (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    trade_date DATE UNIQUE,
+
+    trend REAL,
+
+    volatility REAL,
+
+    breadth REAL,
+
+    institutional_flow REAL,
+
+    sector_rotation REAL,
+
+    regime_score REAL,
+
+    market_regime TEXT,
+
+    confidence REAL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 );

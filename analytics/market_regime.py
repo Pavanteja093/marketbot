@@ -1,14 +1,12 @@
-import sqlite3
 import pandas as pd
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-DB_PATH = BASE_DIR / "market_intelligence.db"
+from database.db import get_connection
 
 
 def get_market_regime():
 
-    conn = sqlite3.connect(str(DB_PATH))
+    conn = get_connection()
 
     # -----------------------------------
     # LATEST NIFTY DAsTA

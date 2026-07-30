@@ -1,15 +1,11 @@
-import sqlite3
 from pathlib import Path
+from database.db import get_connection
 
 import pandas as pd
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-DB_PATH = BASE_DIR / "market_intelligence.db"
-
-
 def get_signal_probability():
 
-    conn = sqlite3.connect(str(DB_PATH))
+    conn = get_connection()
 
     query = """
     SELECT

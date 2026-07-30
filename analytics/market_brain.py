@@ -1,13 +1,15 @@
-import sqlite3
+import math
 import pandas as pd
 from analytics.scoring_engine import calculate_trade_score
 from analytics.market_levels import get_market_levels
+from database.db import get_connection
+from database.repository import Repository
 
-DB_PATH = r"C:\Users\pavan\Documents\Python\Marketbot\market_intelligence.db"
 
-def save_market_features(data):
 
-    conn = sqlite3.connect(DB_PATH)
+def save_market_features(data: dict) -> None:
+
+    conn = get_connection()
 
     cursor = conn.cursor()
 
@@ -29,12 +31,16 @@ def save_market_features(data):
         theta,
         vega,
         market_bias,
-        confidence
+        confidence,
+        expected_move,
+        reward_risk,
+        market_location,
+        trade_quality
     )
 
     VALUES
     (
-        ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+        ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
     ) 
     """, (
 
@@ -53,16 +59,21 @@ def save_market_features(data):
         data["theta"],
         data["vega"],
         data["market_bias"],
-        data["confidence"]
-
-    ))
+        data["confidence"],
+        data["expected_move"],
+        data["reward_risk"],
+        data["market_location"],
+        data["trade_quality"]
+        )
+    )
+    
 
     conn.commit()
     conn.close()                                 
 
-def get_market_brain():
+def get_market_brain() -> dict:
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
 
     symbols = ["NIFTY", "BANKNIFTY", "FINNIFTY"]
 
@@ -70,12 +81,12 @@ def get_market_brain():
 
     for symbol in symbols:
 
-        query = f"""
+        query = """
         SELECT *
 
         FROM option_chain_history
 
-        WHERE symbol='{symbol}'
+        WHERE symbol= ?
 
         AND trade_time = (
 
@@ -83,11 +94,15 @@ def get_market_brain():
 
             FROM option_chain_history
 
-            WHERE symbol='{symbol}'
+            WHERE symbol= ?
         )
         """
 
-        df = pd.read_sql(query, conn)
+        df = pd.read_sql(
+            query, 
+            conn,
+            params=(symbol, symbol)
+        )
 
         if df.empty:
             continue
@@ -108,15 +123,7 @@ def get_market_brain():
 
         real_pcr = total_put / total_call if total_call else 0
 
-        # ---------------------------------
-        # Support / Resistance
-        # ---------------------------------
         
-        support = float(df["strike"][df["put_oi"].idxmax()])
-
-        resistance = float(df["strike"][df["call_oi"].idxmax()])
-        
-
         # ---------------------------------
         # Max Pain
         # ---------------------------------
@@ -135,10 +142,27 @@ def get_market_brain():
         ) / 2
 
         # ---------------------------------
-        # Expected Move
+        # IV Regime
         # ---------------------------------
 
-        import math
+        if avg_iv < 12:
+            iv_regime = "VERY LOW"
+
+        elif avg_iv < 18:
+            iv_regime = "LOW"
+
+        elif avg_iv < 25:
+            iv_regime = "NORMAL"
+
+        elif avg_iv < 35:
+            iv_regime = "HIGH"
+
+        else:
+            iv_regime = "EXTREME"
+
+        # ---------------------------------
+        # Expected Move
+        # ---------------------------------
 
         days_to_expiry = 7   # temporary
 
@@ -213,14 +237,6 @@ def get_market_brain():
             rr=rr
         )
 
-        score = decision["score"]
-        bias = decision["bias"]
-        confidence = decision["confidence"]
-        risk = decision["risk"]
-        trade = decision["trade"]
-        strategy = decision["strategy"]
-        reasons = decision["reasons"]
-
         save_market_features({
 
         "trade_time": df["trade_time"].iloc[0],
@@ -231,9 +247,9 @@ def get_market_brain():
 
         "avg_iv": avg_iv,
 
-        "iv_regime": "HIGH VOLATILITY" if avg_iv > 25 else "LOW VOLATILITY",
-
-        "strategy": strategy,
+        "iv_regime": iv_regime,
+        
+        "strategy": decision["strategy"],
 
         "real_pcr": real_pcr,
 
@@ -251,46 +267,23 @@ def get_market_brain():
 
         "vega": vega,
 
-        "market_bias": bias,
+        "market_bias": decision["bias"],
 
-        "confidence": confidence
+        "confidence": decision["confidence"],
 
-    })
+        "expected_move": expected_move,
+        
+        "reward_risk": rr,
+        
+        "market_location": location,
 
-        results[symbol] = {
-            
-            "symbol": symbol,
+        "trade_quality": decision["score"],
 
-            "spot_price": spot,
+        })
 
-            "real_pcr": real_pcr,
+        state = Repository.market_state(symbol)
+        results[symbol] = state
 
-            "support": support,
-            "resistance": resistance,
-            "max_pain": max_pain,
-
-            "avg_iv": avg_iv,
-
-            "expected_move": expected_move,
-            "upper_target": upper_target,
-            "lower_target": lower_target,
-
-            "delta": delta,
-            "gamma": gamma,
-            "theta": theta,
-            "vega": vega,
-
-            "reward_risk": rr,
-            "market_location": location,
-
-            "score": score,
-            "bias": bias,
-            "confidence": confidence,
-            "risk": risk,
-            "trade": trade,
-            "strategy": strategy,
-            "reasons": reasons
-        }
 
     conn.close()
     return results

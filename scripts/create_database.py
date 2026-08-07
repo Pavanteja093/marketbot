@@ -29,7 +29,14 @@ print("Database schema loaded successfully.")
 
 cursor = conn.cursor()
 
-conn.executescript(sql_script)
+try:
+    conn.executescript(sql_script)
+except Exception as e:
+
+    print("\nERROR while creating database:")
+    print(e)
+
+    raise
 
 # --------------------------------------------------
 # VERIFY TABLES

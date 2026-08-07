@@ -1,41 +1,102 @@
-from database.repository import Repository
+"""
+MarketBot Intelligence Engine
+
+Single source of truth for all stock feature engineering.
+
+Pipeline
+
+stocks_daily
+      │
+      ▼
+Relative Strength
+Momentum
+Sector Strength
+Market Regime
+Volatility
+Trend Strength
+Volume Strength
+      │
+      ▼
+Intelligence Score
+      │
+      ▼
+factor_history
+"""
+
+from database.db import get_connection
+
+from analytics.relative_strength import (
+    calculate_relative_strength
+)
+
+from analytics.momentum_score import (
+    calculate_momentum
+)
 
 
 class IntelligenceEngine:
 
-    @staticmethod
-    def evaluate(symbol):
+    def __init__(self):
 
-        state = Repository.market_state(symbol)
+        self.conn = get_connection()
 
-        return {
+        self.cursor = self.conn.cursor()
 
-            "symbol": state.symbol,
 
-            "bias": state.market_bias,
+    def load_market_data(self):
 
-            "confidence": state.confidence,
+        """
+        Load required market data
+        """
 
-            "strategy": state.recommended_strategy,
+        pass
 
-            "expected_move": state.expected_move,
 
-            "reward_risk": state.reward_risk,
+    def calculate_features(self):
 
-            "trade_quality": state.trade_quality,
+        """
+        Compute every predictive feature
+        """
 
-            "market_location": state.market_location,
+        pass
 
-            "support": state.support,
 
-            "resistance": state.resistance,
+    def calculate_score(self):
 
-            "max_pain": state.max_pain,
+        """
+        Intelligence Score
+        """
 
-            "summary": (
-                f"{state.market_bias} market "
-                f"with {state.confidence:.0f}% confidence. "
-                f"Preferred strategy: {state.recommended_strategy}."
-            )
+        pass
 
-        }
+
+    def save_factor_history(self):
+
+        """
+        Save into factor_history
+        """
+
+        pass
+
+
+    def run(self):
+
+        self.load_market_data()
+
+        self.calculate_features()
+
+        self.calculate_score()
+
+        self.save_factor_history()
+
+        self.conn.close()
+
+
+def build_intelligence():
+
+    IntelligenceEngine().run()
+
+
+if __name__ == "__main__":
+
+    build_intelligence()

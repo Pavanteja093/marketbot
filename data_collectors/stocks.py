@@ -12,125 +12,132 @@ import yfinance as yf
 BASE_DIR = Path(__file__).resolve().parent.parent
 DB_PATH = BASE_DIR / "market_intelligence.db"
 
-# --------------------------------------------------
-# LOAD STOCK LIST
-# --------------------------------------------------
+def main():
+    
+    # --------------------------------------------------
+    # LOAD STOCK LIST
+    # --------------------------------------------------
 
-stocks_df = pd.read_csv(
-    BASE_DIR / "data" / "nifty50.csv"
-)
+    stocks_df = pd.read_csv(
+        BASE_DIR / "data" / "nifty50.csv"
+    )
 
-WATCHLIST = stocks_df["symbol"].tolist()
+    WATCHLIST = stocks_df["symbol"].tolist()
 
-# --------------------------------------------------
-# DATABASE
-# --------------------------------------------------
+    # --------------------------------------------------
+    # DATABASE
+    # --------------------------------------------------
 
-conn = sqlite3.connect(str(DB_PATH))
-cursor = conn.cursor()
+    conn = sqlite3.connect(str(DB_PATH))
+    cursor = conn.cursor()
 
-# --------------------------------------------------
-# BULK DOWNLOAD
-# --------------------------------------------------
+    # --------------------------------------------------
+    # BULK DOWNLOAD
+    # --------------------------------------------------
 
-print("\nDownloading NIFTY stocks...")
+    print("\nDownloading NIFTY stocks...")
 
-df = yf.download(
-    WATCHLIST,
-    period="5d",
-    interval="1d",
-    auto_adjust=False,
-    progress=False,
-    threads=True
-)
+    df = yf.download(
+        WATCHLIST,
+        period="5d",
+        interval="1d",
+        auto_adjust=False,
+        progress=False,
+        threads=True
+    )
 
-today = datetime.now().date()
+    today = datetime.now().date()
 
-saved_count = 0
+    saved_count = 0
 
-# --------------------------------------------------
-# PROCESS EACH STOCK
-# --------------------------------------------------
+    # --------------------------------------------------
+    # PROCESS EACH STOCK
+    # --------------------------------------------------
 
-for symbol in WATCHLIST:
+    for symbol in WATCHLIST:
 
-    try:
+        try:
 
-        stock_df = df.xs(
-            symbol,
-            level=1,
-            axis=1
-        )
-
-        stock_df = stock_df.dropna()
-
-        if len(stock_df) < 2:
-            continue
-
-        latest = stock_df.iloc[-1]
-        previous = stock_df.iloc[-2]
-
-        close_price = float(latest["Close"])
-        previous_close = float(previous["Close"])
-
-        price_change = (
-            close_price -
-            previous_close
-        )
-
-        change_pct = (
-            price_change /
-            previous_close
-        ) * 100
-
-        cursor.execute(
-            """
-            INSERT OR REPLACE INTO stocks_daily
-            (
-                trade_date,
+            stock_df = df.xs(
                 symbol,
-                open,
-                high,
-                low,
-                previous_close,
-                close,
-                price_change,
-                volume,
-                change_pct
+                level=1,
+                axis=1
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                today,
-                symbol,
-                round(float(latest["Open"]), 2),
-                round(float(latest["High"]), 2),
-                round(float(latest["Low"]), 2),
-                round(previous_close, 2),
-                round(close_price, 2),
-                round(price_change, 2),
-                int(latest["Volume"]),
-                round(change_pct, 2)
+
+            stock_df = stock_df.dropna()
+
+            if len(stock_df) < 2:
+                continue
+
+            latest = stock_df.iloc[-1]
+            previous = stock_df.iloc[-2]
+
+            close_price = float(latest["Close"])
+            previous_close = float(previous["Close"])
+
+            price_change = (
+                close_price -
+                previous_close
             )
-        )
 
-        saved_count += 1
+            change_pct = (
+                price_change /
+                previous_close
+            ) * 100
 
-    except Exception as e:
+            cursor.execute(
+                """
+                INSERT OR REPLACE INTO stocks_daily
+                (
+                    trade_date,
+                    symbol,
+                    open,
+                    high,
+                    low,
+                    previous_close,
+                    close,
+                    price_change,
+                    volume,
+                    change_pct
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    today,
+                    symbol,
+                    round(float(latest["Open"]), 2),
+                    round(float(latest["High"]), 2),
+                    round(float(latest["Low"]), 2),
+                    round(previous_close, 2),
+                    round(close_price, 2),
+                    round(price_change, 2),
+                    int(latest["Volume"]),
+                    round(change_pct, 2)
+                )
+            )
 
-        print(
-            f"Skipped: {symbol}"
-        )
+            saved_count += 1
 
-        print(e)
+        except Exception as e:
 
-# --------------------------------------------------
-# COMMIT ONCE
-# --------------------------------------------------
+            print(
+                f"Skipped: {symbol}"
+            )
 
-conn.commit()
-conn.close()
+            print(e)
 
-print(
-    f"\nSaved {saved_count} stocks successfully."
-)
+    # --------------------------------------------------
+    # COMMIT ONCE
+    # --------------------------------------------------
+
+    conn.commit()
+    conn.close()
+
+    print(
+        f"\nSaved {saved_count} stocks successfully."
+    )
+
+
+if __name__ == "__main__":
+
+    main()

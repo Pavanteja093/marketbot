@@ -7,6 +7,27 @@ import pandas as pd
 BASE_DIR = Path(__file__).resolve().parent.parent
 DB_PATH = BASE_DIR / "market_intelligence.db"
 
+def calculate_relative_strength(stock_return, market_return):
+
+    rs = round(stock_return - market_return, 2)
+
+    if rs >= 3:
+        grade = "ELITE"
+    elif rs >= 2:
+        grade = "VERY_STRONG"
+    elif rs >= 1:
+        grade = "STRONG"
+    elif rs >= 0:
+        grade = "POSITIVE"
+    elif rs >= -1:
+        grade = "NEGATIVE"
+    elif rs >= -2:
+        grade = "WEAK"
+    else:
+        grade = "VERY_WEAK"
+
+    return rs, grade
+
 
 class RelativeStrength:
 

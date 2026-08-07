@@ -1,4 +1,6 @@
 from database.repository import Repository
+from analytics.market_statistics import calculate_market_statistics
+from analytics.watchlist_engine import WatchlistEngine
 
 
 def print_table(title, rows):

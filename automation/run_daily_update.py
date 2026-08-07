@@ -37,6 +37,26 @@ FEATURE_ENGINEERING = [
     ),
 
     (
+        "Factor Builder",
+        BASE_DIR / "analytics" / "factor_builder.py"
+    ),
+
+    (
+        "Factor History Builder",
+        BASE_DIR / "analytics" / "factor_history_builder.py"
+    ),
+
+    (
+        "Ranking Engine",
+        BASE_DIR / "analytics" / "ranking_engine.py"
+    ),
+
+    (
+        "Daily Report",
+        BASE_DIR / "analytics" / "daily_report.py"
+    ),
+
+    (
         "Sector Strength",
         BASE_DIR / "analytics" / "sector_strength.py"
     ),
@@ -44,6 +64,21 @@ FEATURE_ENGINEERING = [
     (
         "Market Brain",
         BASE_DIR / "analytics" / "market_brain.py"
+    ),
+
+    (
+        "Prediction Engine",
+        BASE_DIR / "analytics" / "prediction_engine_v2.py"
+    ),
+
+    (
+        "Confidence Engine",
+        BASE_DIR / "analytics" / "confidence_engine.py"
+    ),
+
+    (
+        "Risk Engine",
+        BASE_DIR / "analytics" / "risk_engine.py"
     )
 ]
     
@@ -57,7 +92,62 @@ MARKET_INTELLIGENCE = [
     (
         "Stock Scoring V2",
         BASE_DIR / "analytics" / "stock_scoring_v2.py"
+    ),
+
+    (
+        "Prediction Engine V2",
+        BASE_DIR / "analytics" / "prediction_engine_v2.py"
+    ),
+
+    (
+        "Signal Generator",
+        BASE_DIR / "analytics" / "signal_generator.py"
+    ),
+
+    (
+        "Trade Quality",
+        BASE_DIR / "analytics" / "trade_quality.py"
+    ),
+
+]
+
+RESEARCH = [
+
+    (
+        "Forward Return Engine",
+        BASE_DIR / "research" / "forward_return_engine.py"
+    ),
+
+    (
+        "Factor Research",
+        BASE_DIR / "research" / "factor_research.py"
+    ),
+
+    (
+        "Regime Performance",
+        BASE_DIR / "research" / "regime_performance.py"
+    ),
+
+    (
+        "Signal Accuracy",
+        BASE_DIR / "research" / "signal_accuracy.py"
+    ),
+
+    (
+        "Edge Calculator",
+        BASE_DIR / "research" / "edge.py"
+    ),
+
+    (
+        "Feature Stability",
+        BASE_DIR / "research" / "feature_stability.py"
+    ),
+
+    (
+        "Regime Edge",
+        BASE_DIR / "research" / "regime_edge.py"
     )
+
 ]
 
 HISTORY = [
@@ -80,6 +170,16 @@ HISTORY = [
     (
         "Signal History V2",
         BASE_DIR / "analytics" / "signal_history_v2.py"
+    ),
+
+    (
+        "Forward Return Analysis",
+        BASE_DIR / "research" / "forward_return_analysis.py"
+    ),
+
+    (
+        "Feature Importance",
+        BASE_DIR / "research" / "feature_importance.py"
     )
 ]
 
@@ -89,6 +189,41 @@ LEARNING = [
         "Outcome Tracker",
         BASE_DIR / "learning" / "outcome_tracker.py"
     ),
+
+    (
+        "Model Accuracy",
+        BASE_DIR / "learning" / "model_accuracy.py"
+    ),
+
+    (
+        "Adaptive Weights",
+        BASE_DIR / "learning" / "adaptive_weights.py"
+    ),
+
+    (
+        "Factor Performance",
+        BASE_DIR / "learning" / "factor_performance.py"
+    ),
+
+    (
+        "Weight Recommender",
+        BASE_DIR / "learning" / "weight_recommender.py"
+    ),
+
+    (
+        "Regime Learning",
+        BASE_DIR / "learning" / "regime_learning.py"
+    ),
+
+    (
+        "Factor Decay",
+        BASE_DIR / "learning" / "factor_decay.py"
+    ),
+
+    (
+        "Performance Tracker",
+        BASE_DIR / "learning" / "performance_tracker.py"
+    )
 
 ]
 
@@ -102,8 +237,9 @@ PHASES = [
 
     ("HISTORY", HISTORY),
 
-    ("LEARNING", LEARNING)
+    ("LEARNING", LEARNING),
 
+    ("RESEARCH", RESEARCH)
 ]
     
 for phase_name, phase_tasks in PHASES:

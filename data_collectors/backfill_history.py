@@ -30,20 +30,38 @@ cursor = conn.cursor()
 
 print("\nDownloading 1 year history...")
 
+saved_count = 0
+
+all_history = {}
+
 # --------------------------------------------------
 # DOWNLOAD HISTORY
 # --------------------------------------------------
 
-df = yf.download(
-    WATCHLIST,
-    period="1y",
-    interval="1d",
-    auto_adjust=False,
-    progress=True,
-    threads=True
-)
+for symbol in WATCHLIST:
 
-saved_count = 0
+    try:
+
+        print(f"Downloading {symbol}")
+
+        history = yf.download(
+            symbol,
+            period="1y",
+            interval="1d",
+            auto_adjust=False,
+            progress=False
+        )
+
+        if history is None or history.empty:
+            print(f"No data : {symbol}")
+            continue
+
+        all_history[symbol] = history
+
+    except Exception as e:
+
+        print(symbol)
+        print(e)
 
 # --------------------------------------------------
 # PROCESS EACH STOCK
@@ -53,11 +71,10 @@ for symbol in WATCHLIST:
 
     try:
 
-        stock_df = df.xs(
-            symbol,
-            level=1,
-            axis=1
-        )
+        stock_df = all_history.get(symbol)
+
+        if stock_df is None:
+            continue
 
         stock_df = stock_df.dropna()
 
@@ -73,8 +90,8 @@ for symbol in WATCHLIST:
 
             trade_date = stock_df.index[i].date()
 
-            close_price = float(current["Close"])
-            previous_close = float(previous["Close"])
+            close_price = float(current["Close"].iloc[0])
+            previous_close = float(previous["Close"].iloc[0])
 
             price_change = (
                 close_price -
@@ -106,13 +123,13 @@ for symbol in WATCHLIST:
                 (
                     trade_date,
                     symbol,
-                    round(float(current["Open"]), 2),
-                    round(float(current["High"]), 2),
-                    round(float(current["Low"]), 2),
+                    round(float(current["Open"].iloc[0]), 2),
+                    round(float(current["High"].iloc[0]), 2),
+                    round(float(current["Low"].iloc[0]), 2),
                     round(previous_close, 2),
                     round(close_price, 2),
                     round(price_change, 2),
-                    int(current["Volume"]),
+                    int(current["Volume"].iloc[0]),
                     round(change_pct, 2)
                 )
             )

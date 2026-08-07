@@ -59,6 +59,19 @@ def get_sector_strength():
 
     return sector_df
 
+def strongest_sector(df):
+
+    sector = (
+
+        df.groupby("sector")["intelligence_score"]
+
+        .mean()
+
+        .sort_values(ascending=False)
+
+    )
+
+    return sector
 
 # -----------------------------------
 # STANDALONE EXECUTION

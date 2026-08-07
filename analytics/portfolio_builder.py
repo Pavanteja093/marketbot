@@ -21,6 +21,10 @@ def build_portfolio():
 
     portfolio = optimize_portfolio(signals)
 
+    portfolio["risk_budget"] = (
+        portfolio["weight_pct"] * 0.8
+    ).round(2)
+
     print("\n" + "=" * 70)
     print("PORTFOLIO BUILDER")
     print("=" * 70)

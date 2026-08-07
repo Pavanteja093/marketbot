@@ -1,6 +1,7 @@
 import sqlite3
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DB_PATH = BASE_DIR / "market_intelligence.db"
@@ -14,7 +15,7 @@ def factor_research():
     SELECT
 
         f.trade_date,
-        f.symbol,
+        f.index_name,
 
         f.change_pct,
         f.sector_strength,
@@ -28,8 +29,8 @@ def factor_research():
 
     JOIN forward_returns r
 
-        ON date(f.trade_date) = date(r.trade_date)
-       AND f.symbol = r.symbol
+        ON date(f.trade_date)=date(r.trade_date)
+       AND f.index_name=r.symbol
 
     WHERE r.return_5d IS NOT NULL
     """
@@ -38,24 +39,36 @@ def factor_research():
 
     conn.close()
 
+    if df.empty:
+
+        print("No research data.")
+
+        return
+
     print("\n" + "=" * 70)
     print("FACTOR RESEARCH")
     print("=" * 70)
 
-    print(f"\nRecords Analysed: {len(df):,}")
+    print(f"\nRecords Analysed : {len(df):,}")
 
     factors = [
+
         "change_pct",
+
         "sector_strength",
+
         "position_pct",
+
         "total_score",
+
         "intelligence_score"
+
     ]
 
     for factor in factors:
 
         print("\n" + "-" * 70)
-        print(f"FACTOR: {factor}")
+        print(f"FACTOR : {factor}")
         print("-" * 70)
 
         try:
@@ -67,20 +80,73 @@ def factor_research():
             )
 
             result = (
+
                 df.groupby("bucket")["return_5d"]
+
                 .mean()
+
                 .round(3)
+
             )
 
             print(result)
 
         except Exception as e:
 
-            print(f"Failed: {factor}")
             print(e)
 
-    print("\n" + "=" * 70)
+    print("\n" + "-" * 70)
+    print("FACTOR CORRELATIONS")
+    print("-" * 70)
+
+    numeric_df = df.select_dtypes(include="number")
+
+    correlation = (
+
+        numeric_df.corr()["return_5d"]
+
+        .sort_values(ascending=False)
+
+        .round(3)
+
+    )
+
+    print(correlation)
+
+    print("\n" + "-" * 70)
+    print("BEST PREDICTIVE FACTORS")
+    print("-" * 70)
+
+    print(
+
+        correlation.abs()
+
+        .sort_values(ascending=False)
+
+        .head(10)
+
+    )
+
+    print("\nTop Positive Factors")
+
+    print(
+        correlation[
+            correlation > 0
+        ].sort_values(
+            ascending=False
+        ).head(5)
+    )
+
+    print("\nTop Negative Factors")
+
+    print(
+        correlation[
+            correlation < 0
+        ].sort_values()
+        .head(5)
+    )
 
 
 if __name__ == "__main__":
+
     factor_research()

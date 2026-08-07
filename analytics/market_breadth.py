@@ -59,3 +59,24 @@ if isinstance(ad_ratio, float):
 
     else:
         print("\nBreadth Status : NEGATIVE")
+
+bullish = len(df[df["change_pct"] > 2])
+
+bearish = len(df[df["change_pct"] < -2])
+
+neutral = len(
+    df[
+        (df["change_pct"] >= -2)
+        &
+        (df["change_pct"] <= 2)
+    ]
+)
+
+print(f"Neutral (-2% to +2%) : {neutral}")
+
+print(f"Bullish (>2%)   : {bullish}")
+print(f"Bearish (<-2%)  : {bearish}")
+
+breadth_pct = round((advancing / len(df)) * 100, 2)
+
+print(f"Participation   : {breadth_pct}%")

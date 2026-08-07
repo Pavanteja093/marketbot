@@ -1,4 +1,5 @@
-CREATE TABLE indices_daily (
+PRAGMA foreign_keys = ON;
+CREATE TABLE IF NOT EXISTS indices_daily (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     trade_date DATE,
@@ -34,7 +35,7 @@ CREATE TABLE IF NOT EXISTS stocks_daily (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
     trade_date DATE,
-    index_name TEXT,
+    symbol TEXT,
 
     open REAL,
     high REAL,
@@ -156,9 +157,25 @@ CREATE TABLE IF NOT EXISTS factor_history (
 
     rs_grade TEXT,
 
+    trend_score REAL,
+
+    trend_grade TEXT,
+
+    momentum_score REAL,
+
+    momentum_grade TEXT,
+
+    volatility_score REAL,
+
+    volatility_grade TEXT,
+
+    liquidity_score REAL,
+    
+    liquidity_grade TEXT,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    UNIQUE(trade_date, symbol)
+    UNIQUE(trade_date, index_name)
 );
 
 CREATE TABLE IF NOT EXISTS forward_returns (
@@ -192,7 +209,7 @@ CREATE TABLE IF NOT EXISTS prediction_history (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    UNIQUE(trade_date, symbol)
+    UNIQUE(trade_date, index_name)
 );
 
 CREATE TABLE IF NOT EXISTS prediction_outcomes (
@@ -211,7 +228,7 @@ CREATE TABLE IF NOT EXISTS prediction_outcomes (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    UNIQUE(prediction_date, symbol)
+    UNIQUE(prediction_date, index_name)
 );
 
 CREATE TABLE IF NOT EXISTS factor_library (
@@ -227,7 +244,7 @@ CREATE TABLE IF NOT EXISTS factor_library (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    UNIQUE(trade_date, symbol)
+    UNIQUE(trade_date, index_name)
 );
 
 CREATE TABLE IF NOT EXISTS direction_predictions (
@@ -300,7 +317,7 @@ CREATE TABLE IF NOT EXISTS learning_history (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    UNIQUE(trade_date, symbol)
+    UNIQUE(trade_date, index_name)
 
 );
 
@@ -338,7 +355,7 @@ CREATE TABLE IF NOT EXISTS market_prediction_history (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    UNIQUE(trade_time, symbol)
+    UNIQUE(trade_time, index_name)
 
 );
 
@@ -394,4 +411,46 @@ CREATE TABLE IF NOT EXISTS market_regime (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
+);
+
+CREATE TABLE IF NOT EXISTS stock_rankings (
+
+    trade_date DATE,
+
+    symbol TEXT,
+
+    intelligence_score REAL,
+
+    rank INTEGER,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(trade_date, symbol)
+
+);
+
+CREATE TABLE IF NOT EXISTS prediction_history_v2 (
+
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    trade_date DATE,
+
+    symbol TEXT,
+
+    expected_return REAL,
+
+    win_probability REAL,
+
+    prediction TEXT,
+
+    confidence REAL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS adaptive_weights (
+
+    factor TEXT PRIMARY KEY,
+
+    weight REAL
 );

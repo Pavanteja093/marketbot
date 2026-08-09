@@ -51,7 +51,13 @@ def preflight() -> tuple[bool, list[str]]:
             )
         }
 
-    required = {"stocks_daily", "indices_daily", "signal_history_v2"}
+    required = {
+        "stocks_daily",
+        "indices_daily",
+        "signal_history_v2",
+        "forward_returns",
+        "prediction_outcomes",
+    }
     missing = sorted(required - tables)
     if missing:
         errors.append("Missing required V2 tables: " + ", ".join(missing))
@@ -64,6 +70,7 @@ def preflight() -> tuple[bool, list[str]]:
         "analytics.stock_scoring_v2",
         "analytics.trend_intelligence",
         "analytics.sector_mapping",
+        "learning.v2_outcome_tracker",
     ):
         if not module_exists(module):
             errors.append(f"Required module missing: {module}")
@@ -190,6 +197,68 @@ def run_v2_scoring() -> bool:
     return ok
 
 
+def build_v2_report() -> bool:
+    """Build a read-only V2 production report from verified DB contracts."""
+    try:
+        from analytics.report_builder import ReportBuilder
+
+        with sqlite3.connect(DB_PATH) as conn:
+            latest_date = conn.execute(
+                "SELECT MAX(trade_date) FROM stocks_daily"
+            ).fetchone()[0]
+
+            signals = conn.execute(
+                """
+                SELECT
+                    rank,
+                    index_name,
+                    sector,
+                    intelligence_score
+                FROM signal_history_v2
+                WHERE trade_date = ?
+                ORDER BY rank
+                """,
+                (latest_date,),
+            ).fetchall()
+
+            outcome_count = conn.execute(
+                "SELECT COUNT(*) FROM prediction_outcomes"
+            ).fetchone()[0]
+
+            completed_v2_outcomes = conn.execute(
+                """
+                SELECT COUNT(*)
+                FROM prediction_outcomes AS o
+                INNER JOIN signal_history_v2 AS s
+                    ON DATE(s.trade_date) = DATE(o.prediction_date)
+                   AND s.index_name = o.index_name
+                   AND s.rank = o.rank
+                """
+            ).fetchone()[0]
+
+        report = ReportBuilder()
+        report.title(f"MARKETBOT V2 DAILY REPORT - {latest_date}")
+        report.add(f"V2 signals: {len(signals)}")
+        report.add(f"Prediction outcomes stored: {outcome_count}")
+        report.add(f"V2-linked outcomes: {completed_v2_outcomes}")
+        report.add("")
+        report.add("TOP V2 SIGNALS")
+
+        for rank, index_name, sector, score in signals:
+            report.add(
+                f"{rank:>2}. {index_name:<18} "
+                f"{str(sector or ''):<12} score={float(score):.2f}"
+            )
+
+        print(report.build())
+        print("STATUS: SUCCESS")
+        return True
+
+    except Exception as exc:
+        print(f"V2 report generation failed: {exc}")
+        return False
+
+
 def verify_core_output() -> bool:
     with sqlite3.connect(DB_PATH) as conn:
         latest_date = conn.execute(
@@ -278,6 +347,9 @@ def main() -> int:
     print("LEARNING / OUTCOMES")
     print("=" * 78)
 
+    # V2 outcome tracking is isolated from legacy prediction/learning
+    # modules. It consumes signal_history_v2 + completed 5-day
+    # forward_returns and writes prediction_outcomes only.
     if not run_module(
         Task("V2 Outcome Tracker", "learning.v2_outcome_tracker", False)
     ):
@@ -290,10 +362,13 @@ def main() -> int:
     print("\n" + "=" * 78)
     print("REPORTING")
     print("=" * 78)
-    print(
-        "SKIPPED: reporting dependencies are not yet part of the verified "
-        "V2 production contract."
-    )
+
+    if not build_v2_report():
+        failures.append("V2 Reporting")
+        print(
+            "NON-CRITICAL: V2 report generation failed. "
+            "Core V2 scoring and outcome tracking remain valid."
+        )
 
     print("\n" + "=" * 78)
     print("FINAL VALIDATION")

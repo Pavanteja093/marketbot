@@ -1,133 +1,264 @@
 import sqlite3
-import sys
 from pathlib import Path
+
+import pandas as pd
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DB_PATH = BASE_DIR / "market_intelligence.db"
 
-sys.path.append(
-    str(BASE_DIR / "analytics")
-)
 
-from analytics.stock_scoring_v2 import get_stock_scores_v2
+def backfill_prediction_history():
 
-
-def backfill_predictions():
+    print("\n" + "=" * 70)
+    print("MARKETBOT HISTORICAL PREDICTION BACKFILL")
+    print("=" * 70)
 
     conn = sqlite3.connect(str(DB_PATH))
 
-    conn.execute(
-    """
-    DELETE FROM prediction_history
-    """
+    # --------------------------------------------------
+    # LOAD HISTORICAL FACTOR SCORES
+    # --------------------------------------------------
+
+    df = pd.read_sql(
+        """
+        SELECT
+            DATE(trade_date) AS trade_date,
+            index_name,
+            intelligence_score,
+            rs_grade,
+            trend_grade,
+            momentum_grade,
+            volatility_grade,
+            liquidity_grade
+
+        FROM factor_history
+
+        WHERE intelligence_score IS NOT NULL
+
+        ORDER BY trade_date, intelligence_score DESC
+        """,
+        conn
     )
-
-    # -----------------------------------
-    # Get All Historical Dates
-    # -----------------------------------
-
-    dates = conn.execute(
-        """
-        SELECT DISTINCT trade_date
-        FROM stocks_daily
-        ORDER BY trade_date
-        """
-    ).fetchall()
-
-    dates = [x[0] for x in dates]
 
     print(
-        f"\nFound {len(dates)} trading dates."
+        f"\nFactor records loaded : {len(df):,}"
     )
+
+    if df.empty:
+
+        conn.close()
+
+        print("\nNo factor history available.")
+        return
+
+    # --------------------------------------------------
+    # CREATE TABLE IF NEEDED
+    # --------------------------------------------------
+
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS prediction_history (
+
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            trade_date DATE,
+
+            index_name TEXT,
+
+            sector TEXT,
+
+            rank INTEGER,
+
+            grade TEXT,
+
+            intelligence_score REAL,
+
+            created_at TIMESTAMP
+                DEFAULT CURRENT_TIMESTAMP,
+
+            prediction TEXT,
+
+            confidence REAL,
+
+            risk TEXT,
+
+            future_return_5d REAL,
+
+            future_return_20d REAL,
+
+            prediction_correct INTEGER,
+
+            UNIQUE(trade_date, index_name)
+        )
+        """
+    )
+
+    # --------------------------------------------------
+    # BACKFILL DATE BY DATE
+    # --------------------------------------------------
 
     total_saved = 0
 
-    # -----------------------------------
-    # Process Each Date
-    # -----------------------------------
+    dates = df["trade_date"].dropna().unique()
+
+    print(
+        f"Trading dates         : {len(dates):,}"
+    )
 
     for trade_date in dates:
 
-        try:
+        day = df[
+            df["trade_date"] == trade_date
+        ].copy()
 
-            df = get_stock_scores_v2(
-                trade_date
-            )
+        day = day.sort_values(
+            "intelligence_score",
+            ascending=False
+        ).reset_index(drop=True)
 
-            if len(df) == 0:
-                continue
+        day["rank"] = (
+            day.index + 1
+        )
 
-            # -----------------------------
-            # Ranking
-            # -----------------------------
+        # --------------------------------------------------
+        # INSERT HISTORICAL RANKINGS
+        # --------------------------------------------------
 
-            df = df.sort_values(
-                "intelligence_score",
-                ascending=False
-            )
+        for _, row in day.iterrows():
 
-            df = df.reset_index(
-                drop=True
-            )
+            grade = None
 
-            # -----------------------------
-            # Save Predictions
-            # -----------------------------
+            # Use the existing strongest grade available.
+            for candidate in [
+                row.get("trend_grade"),
+                row.get("momentum_grade"),
+                row.get("volatility_grade"),
+                row.get("liquidity_grade"),
+                row.get("rs_grade"),
+            ]:
 
-            for rank, (_, row) in enumerate(
-                df.iterrows(),
-                start=1
-            ):
+                if pd.notna(candidate):
 
-                conn.execute(
-                    """
-                    INSERT OR IGNORE INTO
-                    prediction_history
-                    (
-                        trade_date,
-                        symbol,
-                        sector,
-                        rank,
-                        grade,
-                        intelligence_score
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?)
-                    """,
-                    (
-                        trade_date,
-                        row["symbol"],
-                        row["sector"],
-                        rank,
-                        row["grade"],
-                        float(
-                            row["intelligence_score"]
-                        )
-                    )
+                    grade = str(candidate)
+
+                    break
+
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO
+                prediction_history
+                (
+                    trade_date,
+                    index_name,
+                    sector,
+                    rank,
+                    grade,
+                    intelligence_score,
+                    prediction,
+                    confidence,
+                    risk
                 )
-
-                total_saved += 1
-
-            print(
-                f"Processed: {trade_date}"
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    trade_date,
+                    row["index_name"],
+                    None,
+                    int(row["rank"]),
+                    grade,
+                    float(
+                        row["intelligence_score"]
+                    ),
+                    None,
+                    None,
+                    None
+                )
             )
 
-        except Exception as e:
+            total_saved += 1
 
-            print(
-                f"Failed: {trade_date}"
+        if (
+            total_saved > 0
+            and (
+                len(
+                    df[
+                        df["trade_date"]
+                        <= trade_date
+                    ]
+                )
+                % 1000 == 0
             )
+        ):
 
-            print(e)
+            conn.commit()
 
     conn.commit()
+
+    # --------------------------------------------------
+    # VALIDATION
+    # --------------------------------------------------
+
+    total = conn.execute(
+        """
+        SELECT COUNT(*)
+        FROM prediction_history
+        """
+    ).fetchone()[0]
+
+    dates_count = conn.execute(
+        """
+        SELECT COUNT(DISTINCT trade_date)
+        FROM prediction_history
+        """
+    ).fetchone()[0]
+
+    symbols = conn.execute(
+        """
+        SELECT COUNT(DISTINCT index_name)
+        FROM prediction_history
+        """
+    ).fetchone()[0]
+
+    date_range = conn.execute(
+        """
+        SELECT
+            MIN(trade_date),
+            MAX(trade_date)
+        FROM prediction_history
+        """
+    ).fetchone()
+
     conn.close()
 
+    print("\n" + "=" * 70)
+    print("HISTORICAL PREDICTION BACKFILL COMPLETE")
+    print("=" * 70)
+
     print(
-        f"\nSaved {total_saved} "
-        f"historical predictions."
+        f"Records written       : {total_saved:,}"
     )
+
+    print(
+        f"Database rows         : {total:,}"
+    )
+
+    print(
+        f"Trading dates         : {dates_count:,}"
+    )
+
+    print(
+        f"Symbols               : {symbols:,}"
+    )
+
+    print(
+        f"Date range            : "
+        f"{date_range[0]} → {date_range[1]}"
+    )
+
+    print("=" * 70)
 
 
 if __name__ == "__main__":
 
-    backfill_predictions()
+    backfill_prediction_history()

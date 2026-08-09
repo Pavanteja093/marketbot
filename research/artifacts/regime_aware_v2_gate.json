@@ -1,0 +1,26 @@
+{
+  "decision": "FAIL",
+  "checks": {
+    "minimum_windows": true,
+    "positive_window_rate": false,
+    "average_spread": false,
+    "median_spread": false,
+    "worst_window": true
+  },
+  "passed_checks": 2,
+  "total_checks": 5,
+  "metrics": {
+    "windows": 5,
+    "average_spread": -0.6677360000000002,
+    "median_spread": -0.529354,
+    "positive_window_pct": 20.0,
+    "worst_window": -1.7072955
+  },
+  "rules": {
+    "min_windows": 5,
+    "min_positive_window_pct": 60.0,
+    "min_average_spread": 0.0,
+    "min_median_spread": 0.0,
+    "max_worst_window": -2.0
+  }
+}

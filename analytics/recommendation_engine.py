@@ -8,7 +8,11 @@ class RecommendationEngine:
 
         confidence,
 
-        risk
+        risk,
+
+        expected_return=0,
+
+        position_size="Auto"
 
     ):
 
@@ -18,34 +22,36 @@ class RecommendationEngine:
 
             "confidence": confidence,
 
-            "risk": risk
+            "risk": risk,
+
+            "expected_return": expected_return,
+
+            "position_size": position_size
 
         }
 
         if signal == "STRONG BUY":
 
-            recommendation["position_size"] = "Full"
+            recommendation["action"] = "BUY NOW"
+
+            recommendation["priority"] = 1
 
         elif signal == "BUY":
 
-            recommendation["position_size"] = "Half"
+            recommendation["action"] = "BUY"
+
+            recommendation["priority"] = 2
 
         elif signal == "HOLD":
 
-            recommendation["position_size"] = "Watch"
+            recommendation["action"] = "WATCH"
+
+            recommendation["priority"] = 3
 
         else:
 
-            recommendation["position_size"] = "Avoid"
+            recommendation["action"] = "AVOID"
+
+            recommendation["priority"] = 4
 
         return recommendation
-
-        return {
-
-            "signal": signal,
-
-            "confidence": confidence,
-
-            "risk": risk
-
-        }

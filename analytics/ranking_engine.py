@@ -184,6 +184,17 @@ def build_rankings():
         ].head(5)
     )
 
+    print("\nTop Momentum Stock")
+    print("-" * 30)
+
+    best = df.sort_values(
+        "momentum_score",
+        ascending=False
+    ).iloc[0]
+
+    print(best["index_name"])
+    print(best["momentum_score"])
+
     return df
 
 

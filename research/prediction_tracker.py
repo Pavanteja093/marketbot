@@ -1,17 +1,60 @@
-import pandas as pd
+import sqlite3
 
 from database.db import get_connection
 
 
-def save_prediction(row):
+def save_prediction(
+
+    trade_date,
+
+    index_name,
+
+    intelligence_score,
+
+    prediction
+
+):
 
     conn = get_connection()
 
-    pd.DataFrame([row]).to_sql(
-        "prediction_history",
-        conn,
-        if_exists="append",
-        index=False
+    cursor = conn.cursor()
+
+    cursor.execute(
+
+        """
+
+        INSERT INTO prediction_history(
+
+            trade_date,
+
+            index_name,
+
+            intelligence_score,
+
+            prediction,
+
+            prediction_correct
+
+        )
+
+        VALUES(?,?,?,?,0)
+
+        """,
+
+        (
+
+            trade_date,
+
+            index_name,
+
+            intelligence_score,
+
+            prediction
+
+        )
+
     )
+
+    conn.commit()
 
     conn.close()

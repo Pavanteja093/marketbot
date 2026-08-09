@@ -1,292 +1,394 @@
 import subprocess
+import sys
 from pathlib import Path
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+PYTHON = sys.executable
 
-print("\n" + "=" * 70)
-print("MARKETBOT DAILY UPDATE")
-print("=" * 70)
 
-DATA_COLLECTION = [
+def run_module(
+    name,
+    module,
+    required=True
+):
+
+    print("\n" + "-" * 70)
+    print(name)
+    print("-" * 70)
+
+    try:
+
+        result = subprocess.run(
+            [
+                PYTHON,
+                "-m",
+                module
+            ],
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True
+        )
+
+        if result.stdout:
+            print(result.stdout)
+
+        if result.returncode != 0:
+
+            print(
+                f"FAILED: {module}"
+            )
+
+            if result.stderr:
+                print(result.stderr)
+
+            if required:
+                return False
+
+            return True
+
+        print(
+            f"SUCCESS: {module}"
+        )
+
+        return True
+
+    except Exception as exc:
+
+        print(
+            f"ERROR running {module}: "
+            f"{exc}"
+        )
+
+        return not required
+
+
+def main():
+
+    print("\n" + "=" * 75)
+    print("MARKETBOT PRODUCTION DAILY UPDATE")
+    print("=" * 75)
+
+    failures = []
+
+    # ========================================================
+    # 1. DATABASE SYNCHRONIZATION
+    # ========================================================
+
+    synchronization = [
+
+        (
+            "Market Data Repair",
+            "automation.repair_market_data"
+        ),
+
+        (
+            "Database Doctor",
+            "automation.database_doctor"
+        ),
+
+    ]
+
+    for name, module in synchronization:
+
+        if not run_module(
+            name,
+            module,
+            required=True
+        ):
+
+            failures.append(module)
+
+            print(
+                "\nCRITICAL: "
+                "Database synchronization failed."
+            )
+
+            return False
+
+    # ========================================================
+    # 2. DATA COLLECTION
+    # ========================================================
+
+    collectors = [
+
         (
             "Stocks Collector",
-            BASE_DIR / "data_collectors" / "stocks.py"
+            "data_collectors.stocks"
         ),
 
         (
             "Indices Collector",
-            BASE_DIR / "data_collectors" / "indices.py"
+            "data_collectors.indices"
         ),
 
         (
             "Option Chain Collector",
-            BASE_DIR / "data_collectors" / "option_chain_upstox.py"
+            "data_collectors.option_chain_upstox"
         ),
 
         (
             "FII DII Collector",
-            BASE_DIR / "data_collectors" / "fii_dii.py"
+            "data_collectors.fii_dii"
+        ),
+
+    ]
+
+    for name, module in collectors:
+
+        if not run_module(
+            name,
+            module,
+            required=True
+        ):
+
+            failures.append(module)
+
+    if failures:
+
+        print(
+            "\nDATA COLLECTION FAILED."
         )
-]
 
-FEATURE_ENGINEERING = [
+        return False
 
-    (
-        "Feature Builder",
-        BASE_DIR / "analytics" / "feature_builder.py"
-    ),
+    # ========================================================
+    # 3. FEATURE / FACTOR PIPELINE
+    # ========================================================
 
-    (
-        "Factor Builder",
-        BASE_DIR / "analytics" / "factor_builder.py"
-    ),
+    analytics = [
 
-    (
-        "Factor History Builder",
-        BASE_DIR / "analytics" / "factor_history_builder.py"
-    ),
+        (
+            "Feature Builder",
+            "analytics.feature_builder"
+        ),
 
-    (
-        "Ranking Engine",
-        BASE_DIR / "analytics" / "ranking_engine.py"
-    ),
+        (
+            "Factor Builder",
+            "analytics.factor_builder"
+        ),
 
-    (
-        "Daily Report",
-        BASE_DIR / "analytics" / "daily_report.py"
-    ),
+        (
+            "Historical Factor Builder",
+            "analytics.factor_history_builder"
+        ),
 
-    (
-        "Sector Strength",
-        BASE_DIR / "analytics" / "sector_strength.py"
-    ),
+        (
+            "Ranking Engine",
+            "analytics.ranking_engine"
+        ),
 
-    (
-        "Market Brain",
-        BASE_DIR / "analytics" / "market_brain.py"
-    ),
+    ]
 
-    (
-        "Prediction Engine",
-        BASE_DIR / "analytics" / "prediction_engine_v2.py"
-    ),
+    for name, module in analytics:
 
-    (
-        "Confidence Engine",
-        BASE_DIR / "analytics" / "confidence_engine.py"
-    ),
+        if not run_module(
+            name,
+            module,
+            required=True
+        ):
 
-    (
-        "Risk Engine",
-        BASE_DIR / "analytics" / "risk_engine.py"
+            failures.append(module)
+
+    # ========================================================
+    # 4. MARKET INTELLIGENCE
+    # ========================================================
+
+    intelligence = [
+
+        (
+            "Stock Scoring V1",
+            "analytics.stock_scoring"
+        ),
+
+        (
+            "Stock Scoring V2",
+            "analytics.stock_scoring_v2"
+        ),
+
+        (
+            "Prediction Engine",
+            "analytics.prediction_engine_v2"
+        ),
+
+        (
+            "Signal Generator",
+            "analytics.signal_generator"
+        ),
+
+        (
+            "Trade Quality",
+            "analytics.trade_quality"
+        ),
+
+    ]
+
+    for name, module in intelligence:
+
+        if not run_module(
+            name,
+            module,
+            required=False
+        ):
+
+            failures.append(module)
+
+    # ========================================================
+    # 5. HISTORY
+    # ========================================================
+
+    history = [
+
+        (
+            "Prediction History",
+            "research.prediction_history"
+        ),
+
+        (
+            "Forward Returns",
+            "research.forward_returns"
+        ),
+
+    ]
+
+    for name, module in history:
+
+        if not run_module(
+            name,
+            module,
+            required=False
+        ):
+
+            failures.append(module)
+
+    # ========================================================
+    # 6. RESEARCH
+    # ========================================================
+
+    research = [
+
+        (
+            "Factor Research",
+            "research.factor_research"
+        ),
+
+        (
+            "Walk Forward Validation",
+            "research.walk_forward"
+        ),
+
+        (
+            "Factor Performance",
+            "research.factor_performance"
+        ),
+
+    ]
+
+    for name, module in research:
+
+        if not run_module(
+            name,
+            module,
+            required=False
+        ):
+
+            failures.append(module)
+
+    # ========================================================
+    # 7. LEARNING
+    # ========================================================
+
+    learning = [
+
+        (
+            "Learning Engine",
+            "learning.learning_engine"
+        ),
+
+        (
+            "Weight Research",
+            "learning.weight_optimizer"
+        ),
+
+    ]
+
+    for name, module in learning:
+
+        if not run_module(
+            name,
+            module,
+            required=False
+        ):
+
+            failures.append(module)
+
+    # ========================================================
+    # 8. FINAL HEALTH CHECK
+    # ========================================================
+
+    health = [
+
+        (
+            "Database Doctor",
+            "automation.database_doctor"
+        ),
+
+        (
+            "Database Self-Repair Check",
+            "automation.self_repair"
+        ),
+
+    ]
+
+    for name, module in health:
+
+        if not run_module(
+            name,
+            module,
+            required=True
+        ):
+
+            failures.append(module)
+
+    # ========================================================
+    # FINAL STATUS
+    # ========================================================
+
+    print("\n" + "=" * 75)
+    print("MARKETBOT DAILY UPDATE RESULT")
+    print("=" * 75)
+
+    if failures:
+
+        print(
+            "\nSTATUS: COMPLETED WITH FAILURES"
+        )
+
+        print("\nFailed modules:")
+
+        for module in failures:
+
+            print(
+                f"  - {module}"
+            )
+
+        return False
+
+    print(
+        "\nSTATUS: SUCCESS"
     )
-]
-    
-MARKET_INTELLIGENCE = [
 
-    (
-        "Stock Scoring V1",
-        BASE_DIR / "analytics" / "stock_scoring.py"
-    ),
-
-    (
-        "Stock Scoring V2",
-        BASE_DIR / "analytics" / "stock_scoring_v2.py"
-    ),
-
-    (
-        "Prediction Engine V2",
-        BASE_DIR / "analytics" / "prediction_engine_v2.py"
-    ),
-
-    (
-        "Signal Generator",
-        BASE_DIR / "analytics" / "signal_generator.py"
-    ),
-
-    (
-        "Trade Quality",
-        BASE_DIR / "analytics" / "trade_quality.py"
-    ),
-
-]
-
-RESEARCH = [
-
-    (
-        "Forward Return Engine",
-        BASE_DIR / "research" / "forward_return_engine.py"
-    ),
-
-    (
-        "Factor Research",
-        BASE_DIR / "research" / "factor_research.py"
-    ),
-
-    (
-        "Regime Performance",
-        BASE_DIR / "research" / "regime_performance.py"
-    ),
-
-    (
-        "Signal Accuracy",
-        BASE_DIR / "research" / "signal_accuracy.py"
-    ),
-
-    (
-        "Edge Calculator",
-        BASE_DIR / "research" / "edge.py"
-    ),
-
-    (
-        "Feature Stability",
-        BASE_DIR / "research" / "feature_stability.py"
-    ),
-
-    (
-        "Regime Edge",
-        BASE_DIR / "research" / "regime_edge.py"
+    print(
+        "All required pipeline stages completed."
     )
 
-]
+    return True
 
-HISTORY = [
 
-    (
-        "Save Factor History",
-        BASE_DIR / "analytics" / "save_factor_history.py"
-    ),
+if __name__ == "__main__":
 
-    (
-        "Prediction History",
-        BASE_DIR / "research" / "prediction_history.py"
-    ),
+    success = main()
 
-    (
-        "Market Prediction History",
-        BASE_DIR / "analytics" / "market_prediction_history.py"
-    ),
-
-    (
-        "Signal History V2",
-        BASE_DIR / "analytics" / "signal_history_v2.py"
-    ),
-
-    (
-        "Forward Return Analysis",
-        BASE_DIR / "research" / "forward_return_analysis.py"
-    ),
-
-    (
-        "Feature Importance",
-        BASE_DIR / "research" / "feature_importance.py"
+    sys.exit(
+        0 if success else 1
     )
-]
-
-LEARNING = [
-
-    (
-        "Outcome Tracker",
-        BASE_DIR / "learning" / "outcome_tracker.py"
-    ),
-
-    (
-        "Model Accuracy",
-        BASE_DIR / "learning" / "model_accuracy.py"
-    ),
-
-    (
-        "Adaptive Weights",
-        BASE_DIR / "learning" / "adaptive_weights.py"
-    ),
-
-    (
-        "Factor Performance",
-        BASE_DIR / "learning" / "factor_performance.py"
-    ),
-
-    (
-        "Weight Recommender",
-        BASE_DIR / "learning" / "weight_recommender.py"
-    ),
-
-    (
-        "Regime Learning",
-        BASE_DIR / "learning" / "regime_learning.py"
-    ),
-
-    (
-        "Factor Decay",
-        BASE_DIR / "learning" / "factor_decay.py"
-    ),
-
-    (
-        "Performance Tracker",
-        BASE_DIR / "learning" / "performance_tracker.py"
-    )
-
-]
-
-PHASES = [
-
-    ("DATA COLLECTION", DATA_COLLECTION),
-
-    ("FEATURE ENGINEERING", FEATURE_ENGINEERING),
-
-    ("MARKET INTELLIGENCE", MARKET_INTELLIGENCE),
-
-    ("HISTORY", HISTORY),
-
-    ("LEARNING", LEARNING),
-
-    ("RESEARCH", RESEARCH)
-]
-    
-for phase_name, phase_tasks in PHASES:
-
-        print("\n" + "=" * 70)
-        print(phase_name)
-        print("=" * 70)
-
-        for task_name, script_path in phase_tasks:
-
-            try:
-
-                relative_script = script_path.relative_to(BASE_DIR)
-
-                module_name = (
-                    str(relative_script)
-                    .replace("\\", ".")
-                    .replace("/", ".")
-                    .replace(".py", "")
-                )
-
-                result = subprocess.run(
-                    ["python", "-m", module_name],
-                    capture_output=True,
-                    text=True,
-                    cwd=BASE_DIR
-                )
-
-                if result.returncode == 0:
-
-                    print("SUCCESS")
-
-                    if result.stdout:
-                        print(result.stdout)
-                    
-                else:
-
-                    print("FAILED")
-
-                    if result.stderr:
-                        print(result.stderr)
-
-            except Exception as e:
-
-                print("ERROR")
-                print(e)
-
-print("\n" + "=" * 70)
-print("DAILY UPDATE COMPLETED")
-print("=" * 70)

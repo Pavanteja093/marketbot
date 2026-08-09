@@ -1,0 +1,19 @@
+{
+  "summary": {
+    "windows": 5,
+    "average_spread": -0.6447691058479532,
+    "median_spread": -0.713681,
+    "positive_window_pct": 20.0,
+    "worst_window": -1.634337,
+    "best_window": 0.14562749999999988
+  },
+  "regime_counts": {
+    "SIDEWAYS": 102,
+    "HIGH_VOL_DOWN": 68,
+    "TREND_UP": 50,
+    "HIGH_VOL_UP": 11,
+    "LOW_VOL": 9,
+    "TREND_DOWN": 6
+  },
+  "production_changed": false
+}

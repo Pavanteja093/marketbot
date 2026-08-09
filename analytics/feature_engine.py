@@ -3,17 +3,26 @@ MarketBot Feature Engine
 
 Purpose:
 --------
-Calculates all engineered features for one stock.
+Calculates engineered factors for one stock's historical price data.
+
+Used by:
+--------
+analytics.factor_history_builder
 
 Returns:
 --------
 {
+    "intelligence_score": ...,
     "relative_strength": ...,
     "rs_grade": ...,
     "momentum_score": ...,
     "momentum_grade": ...,
     "trend_score": ...,
-    "trend_grade": ...
+    "trend_grade": ...,
+    "volatility_score": ...,
+    "volatility_grade": ...,
+    "liquidity_score": ...,
+    "liquidity_grade": ...
 }
 """
 
@@ -31,62 +40,100 @@ class FeatureEngine:
         self,
         history_df,
         stock_return,
-        market_returns
+        market_return
     ):
+
+        # ----------------------------------------------------
+        # RELATIVE STRENGTH
+        # ----------------------------------------------------
 
         rs, rs_grade = calculate_relative_strength(
             stock_return,
-            market_returns
+            market_return
         )
+
+        # ----------------------------------------------------
+        # MOMENTUM
+        # ----------------------------------------------------
 
         momentum_score, momentum_grade = calculate_momentum(
             history_df
         )
 
+        # ----------------------------------------------------
+        # TREND
+        # ----------------------------------------------------
+
         trend_score, trend_grade = calculate_trend(
             history_df
         )
+
+        # ----------------------------------------------------
+        # VOLATILITY
+        # ----------------------------------------------------
 
         volatility_score, volatility_grade = calculate_volatility(
             history_df
         )
 
+        # ----------------------------------------------------
+        # LIQUIDITY
+        # ----------------------------------------------------
+
         liquidity_score, liquidity_grade = calculate_liquidity(
             history_df
         )
-        intelligence_score = calculate_intelligence({
 
-        "relative_strength": rs,
+        # ----------------------------------------------------
+        # INTELLIGENCE SCORE
+        # ----------------------------------------------------
 
-        "trend_score": trend_score,
+        intelligence_score = calculate_intelligence(
+            {
+                "relative_strength": rs,
+                "trend_score": trend_score,
+                "momentum_score": momentum_score,
+                "volatility_score": volatility_score,
+                "liquidity_score": liquidity_score
+            }
+        )
 
-        "momentum_score": momentum_score,
+        # ----------------------------------------------------
+        # RETURN ALL FACTORS
+        # ----------------------------------------------------
 
-        "volatility_score": volatility_score,
+        return {
 
-        "liquidity_score": liquidity_score
+            "intelligence_score":
+                intelligence_score,
 
-        })
+            "relative_strength":
+                rs,
 
-        features =  {
+            "rs_grade":
+                rs_grade,
 
-            "intelligence_score": intelligence_score,
+            "momentum_score":
+                momentum_score,
 
-            "relative_strength": rs,
-            "rs_grade": rs_grade,
+            "momentum_grade":
+                momentum_grade,
 
-            "momentum_score": momentum_score,
-            "momentum_grade": momentum_grade,
+            "trend_score":
+                trend_score,
 
-            "trend_score": trend_score,
-            "trend_grade": trend_grade,
+            "trend_grade":
+                trend_grade,
 
-            "volatility_score": volatility_score,
-            "volatility_grade": volatility_grade,
+            "volatility_score":
+                volatility_score,
 
-            "liquidity_score": liquidity_score,
-            "liquidity_grade": liquidity_grade
+            "volatility_grade":
+                volatility_grade,
 
+            "liquidity_score":
+                liquidity_score,
+
+            "liquidity_grade":
+                liquidity_grade
         }
-
-        return features

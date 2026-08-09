@@ -1,23 +1,17 @@
-def explain_score(features):
+def score_breakdown(features, weights):
 
-    return {
+    contributions = {}
 
-        "Relative Strength":
-            features["relative_strength"],
+    for factor, weight in weights.items():
 
-        "Momentum":
-            features["momentum_score"],
+        value = features.get(factor, 0)
 
-        "Trend":
-            features["trend_score"],
+        contributions[factor] = round(value * weight, 2)
 
-        "Volatility":
-            features["volatility_score"],
-
-        "Liquidity":
-            features["liquidity_score"],
-
-        "Overall":
-            features["intelligence_score"]
-
-    }
+    return dict(
+        sorted(
+            contributions.items(),
+            key=lambda x: x[1],
+            reverse=True
+        )
+    )

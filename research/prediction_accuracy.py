@@ -1,3 +1,4 @@
+import sqlite3
 import pandas as pd
 
 from database.db import get_connection
@@ -8,33 +9,35 @@ def prediction_accuracy():
     conn = get_connection()
 
     df = pd.read_sql(
+
         """
-        SELECT *
-        FROM prediction_outcomes
+
+        SELECT
+
+            prediction_correct
+
+        FROM prediction_history
+
+        WHERE prediction IS NOT NULL
+
         """,
+
         conn
+
     )
 
     conn.close()
 
-    if df.empty:
+    if len(df) == 0:
 
-        print("No predictions evaluated.")
+        print("No predictions yet.")
 
         return
 
-    accuracy = (
-        df["prediction_correct"]
-        .mean()
-        * 100
-    )
+    accuracy = df.prediction_correct.mean() * 100
 
-    print()
+    print("\nPrediction Accuracy")
 
-    print("=" * 60)
+    print("-" * 30)
 
-    print("MODEL ACCURACY")
-
-    print("=" * 60)
-
-    print(f"Accuracy : {accuracy:.2f}%")
+    print(f"{accuracy:.2f}%")

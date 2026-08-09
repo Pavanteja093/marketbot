@@ -2,6 +2,7 @@ import sqlite3
 import pandas as pd
 from pathlib import Path
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 DB_PATH = BASE_DIR / "market_intelligence.db"
 
@@ -10,129 +11,228 @@ def calculate_forward_returns():
 
     conn = sqlite3.connect(str(DB_PATH))
 
-    conn.execute("""
-    CREATE TABLE IF NOT EXISTS forward_returns (
+    try:
 
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+        # --------------------------------------------------
+        # VERIFY / CREATE FORWARD RETURNS TABLE
+        # --------------------------------------------------
 
-    trade_date DATE,
-    symbol TEXT,
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS forward_returns (
 
-    return_1d REAL,
-    return_5d REAL,
-    return_10d REAL,
-    return_20d REAL
-    )
-    """)
-    # -----------------------------
-    # Load Stock History
-    # -----------------------------
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    query = """
-    SELECT
-        trade_date,
-        symbol,
-        close
-    FROM stocks_daily
-    ORDER BY symbol, trade_date
-    """
+                trade_date DATE,
 
-    df = pd.read_sql(query, conn)
+                index_name TEXT,
 
-    df["trade_date"] = (
-        pd.to_datetime(df["trade_date"])
-        .dt.strftime("%Y-%m-%d")
-    )
+                return_1d REAL,
 
-    # -----------------------------
-    # Future Prices
-    # -----------------------------
+                return_5d REAL,
 
-    df["close_1d"] = (
-        df.groupby("symbol")["close"]
-        .shift(-1)
-    )
+                return_10d REAL,
 
-    df["close_5d"] = (
-        df.groupby("symbol")["close"]
-        .shift(-5)
-    )
+                return_20d REAL
+            )
+            """
+        )
 
-    df["close_10d"] = (
-        df.groupby("symbol")["close"]
-        .shift(-10)
-    )
+        # --------------------------------------------------
+        # LOAD STOCK HISTORY
+        # --------------------------------------------------
 
-    df["close_20d"] = (
-        df.groupby("symbol")["close"]
-        .shift(-20)
-    )
+        query = """
+            SELECT
+                trade_date,
+                symbol,
+                close
+            FROM stocks_daily
+            ORDER BY symbol, trade_date
+        """
 
-    # -----------------------------
-    # Returns
-    # -----------------------------
+        df = pd.read_sql(query, conn)
 
-    df["return_1d"] = (
-        (df["close_1d"] - df["close"])
-        / df["close"]
-    ) * 100
+        if df.empty:
 
-    df["return_5d"] = (
-        (df["close_5d"] - df["close"])
-        / df["close"]
-    ) * 100
+            print("\nNo stock history found.")
 
-    df["return_10d"] = (
-        (df["close_10d"] - df["close"])
-        / df["close"]
-    ) * 100
+            return
 
-    df["return_20d"] = (
-        (df["close_20d"] - df["close"])
-        / df["close"]
-    ) * 100
+        # --------------------------------------------------
+        # NORMALIZE DATE
+        # --------------------------------------------------
 
-    # -----------------------------
-    # Keep Required Columns
-    # -----------------------------
+        df["trade_date"] = pd.to_datetime(
+            df["trade_date"]
+        )
 
-    result = df[
-        [
-            "trade_date",
-            "symbol",
-            "return_1d",
-            "return_5d",
-            "return_10d",
-            "return_20d"
-        ]
-    ].copy()
+        # --------------------------------------------------
+        # SORT CORRECTLY
+        # --------------------------------------------------
 
-    # -----------------------------
-    # Remove Existing Data
-    # -----------------------------
+        df = df.sort_values(
+            [
+                "symbol",
+                "trade_date"
+            ]
+        ).reset_index(drop=True)
 
-    conn.execute(
-        "DELETE FROM forward_returns"
-    )
+        # --------------------------------------------------
+        # FUTURE PRICES
+        # --------------------------------------------------
 
-    # -----------------------------
-    # Save To Database
-    # -----------------------------
+        grouped = df.groupby("symbol")["close"]
 
-    result.to_sql(
-        "forward_returns",
-        conn,
-        if_exists="append",
-        index=False
-    )
+        df["close_1d"] = grouped.shift(-1)
 
-    conn.commit()
-    conn.close()
+        df["close_5d"] = grouped.shift(-5)
 
-    print(
-        f"\nSaved {len(result)} "
-        f"forward return records"
-    )
+        df["close_10d"] = grouped.shift(-10)
+
+        df["close_20d"] = grouped.shift(-20)
+
+        # --------------------------------------------------
+        # FORWARD RETURNS
+        # --------------------------------------------------
+
+        df["return_1d"] = (
+            (
+                df["close_1d"]
+                -
+                df["close"]
+            )
+            /
+            df["close"]
+        ) * 100
+
+        df["return_5d"] = (
+            (
+                df["close_5d"]
+                -
+                df["close"]
+            )
+            /
+            df["close"]
+        ) * 100
+
+        df["return_10d"] = (
+            (
+                df["close_10d"]
+                -
+                df["close"]
+            )
+            /
+            df["close"]
+        ) * 100
+
+        df["return_20d"] = (
+            (
+                df["close_20d"]
+                -
+                df["close"]
+            )
+            /
+            df["close"]
+        ) * 100
+
+        # --------------------------------------------------
+        # RENAME SYMBOL -> INDEX_NAME
+        # --------------------------------------------------
+
+        df["index_name"] = df["symbol"]
+
+        # --------------------------------------------------
+        # BUILD FINAL DATASET
+        # --------------------------------------------------
+
+        result = df[
+            [
+                "trade_date",
+                "index_name",
+                "return_1d",
+                "return_5d",
+                "return_10d",
+                "return_20d"
+            ]
+        ].copy()
+
+        # --------------------------------------------------
+        # ROUND RETURNS
+        # --------------------------------------------------
+
+        result["return_1d"] = result["return_1d"].round(4)
+
+        result["return_5d"] = result["return_5d"].round(4)
+
+        result["return_10d"] = result["return_10d"].round(4)
+
+        result["return_20d"] = result["return_20d"].round(4)
+
+        # --------------------------------------------------
+        # REMOVE OLD DATA
+        # --------------------------------------------------
+
+        conn.execute(
+            "DELETE FROM forward_returns"
+        )
+
+        # --------------------------------------------------
+        # SAVE
+        # --------------------------------------------------
+
+        result.to_sql(
+            "forward_returns",
+            conn,
+            if_exists="append",
+            index=False
+        )
+
+        conn.commit()
+
+        # --------------------------------------------------
+        # REPORT
+        # --------------------------------------------------
+
+        usable_1d = result["return_1d"].notna().sum()
+
+        usable_5d = result["return_5d"].notna().sum()
+
+        usable_10d = result["return_10d"].notna().sum()
+
+        usable_20d = result["return_20d"].notna().sum()
+
+        print("\n" + "=" * 70)
+
+        print("FORWARD RETURNS")
+
+        print("=" * 70)
+
+        print(
+            f"Total records      : {len(result)}"
+        )
+
+        print(
+            f"Usable 1D returns  : {usable_1d}"
+        )
+
+        print(
+            f"Usable 5D returns  : {usable_5d}"
+        )
+
+        print(
+            f"Usable 10D returns : {usable_10d}"
+        )
+
+        print(
+            f"Usable 20D returns : {usable_20d}"
+        )
+
+        print("=" * 70)
+
+    finally:
+
+        conn.close()
 
 
 if __name__ == "__main__":

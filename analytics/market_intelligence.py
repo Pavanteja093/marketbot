@@ -34,6 +34,7 @@ print("\n" + "=" * 60)
 print("MARKET INTELLIGENCE")
 print("=" * 60)
 
+
 for symbol in sorted(df["symbol"].unique()):
 
     temp = df[df["symbol"] == symbol]

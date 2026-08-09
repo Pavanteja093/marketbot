@@ -1,3 +1,4 @@
+
 class ReportBuilder:
 
     def __init__(self):

@@ -1,9 +1,15 @@
-def calculate_risk(volatility_score):
+def calculate_risk(features):
 
-    if volatility_score >= 80:
+    volatility = features["volatility_score"]
+
+    liquidity = features["liquidity_score"]
+
+    if volatility >= 80 and liquidity >= 70:
+
         return "LOW"
 
-    elif volatility_score >= 60:
+    elif volatility >= 60:
+
         return "MEDIUM"
 
     return "HIGH"

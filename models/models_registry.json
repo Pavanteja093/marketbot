@@ -1,0 +1,21 @@
+{
+    "MarketBot V1": {
+
+        "version": "1.0",
+
+        "accuracy": 0.0,
+
+        "status": "Champion",
+
+        "created": "",
+
+        "last_trained": "",
+
+        "last_tested": "",
+
+        "wins": 0,
+
+        "losses": 0
+
+    }
+}

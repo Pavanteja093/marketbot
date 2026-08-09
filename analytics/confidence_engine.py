@@ -1,8 +1,13 @@
-def confidence_score(probability, intelligence):
+def confidence_score(features):
 
     score = (
-        probability * 0.6 +
-        intelligence * 0.4
+
+        features["probability"] * 0.50 +
+
+        features["intelligence_score"] * 0.30 +
+
+        features["quality_score"] * 0.20
+
     )
 
     return round(score, 2)

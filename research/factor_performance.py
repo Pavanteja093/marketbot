@@ -1,4 +1,4 @@
-import pandas as pd
+﻿import pandas as pd
 
 from database.db import get_connection
 
@@ -14,7 +14,7 @@ def factor_performance():
             return_5d
         FROM forward_returns f
         JOIN factor_history h
-            ON f.symbol=h.index_name
+            ON f.index_name=h.index_name
            AND f.trade_date=h.trade_date
         """,
         conn
@@ -35,3 +35,4 @@ def factor_performance():
 
 if __name__ == "__main__":
     factor_performance()
+

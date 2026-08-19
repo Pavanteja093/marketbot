@@ -1,0 +1,300 @@
+﻿) -> tuple[str, float]:
+
+    down, flat, up = _label_counts(frame)
+
+    counts = {
+        "DOWN": down,
+        "FLAT": flat,
+        "UP": up,
+    }
+
+    outcome = max(
+        counts,
+        key=lambda k: (
+            counts[k],
+            {
+                "DOWN": 0,
+                "FLAT": 1,
+                "UP": 2,
+            }[k],
+        ),
+    )
+
+    return (
+        outcome,
+        counts[outcome] / len(frame) * 100.0,
+    )
+
+
+def _candidate_key(
+    candidate: tuple[str, str, str, str, str],
+) -> str:
+    scenario, factor_a, state_a, factor_b, state_b = candidate
+
+    return (
+        f"{scenario}|"
+        f"{factor_a}={state_a}|"
+        f"{factor_b}={state_b}"
+    )
+
+
+def evaluate_candidates(
+    dataset: pd.DataFrame,
+    oos: pd.DataFrame,
+    episodes: pd.DataFrame,
+    candidates: tuple[
+        tuple[str, str, str, str, str],
+        ...
+    ],
+    *,
+    min_episode_observations: int = 20,
+    min_dominant_probability: float = 60.0,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+
+    episode_rows = []
+    summary_rows = []
+
+    for candidate in candidates:
+
+        scenario, factor_a, state_a, factor_b, state_b = candidate
+
+        key = _candidate_key(candidate)
+
+        candidate_rows = dataset.loc[
+            _candidate_mask(dataset, candidate)
+        ].copy()
+
+        oos_match = oos[
+            oos["scenario"].eq(scenario)
+            & oos["factor_a"].eq(factor_a)
+            & oos["state_a"].eq(state_a)
+            & oos["factor_b"].eq(factor_b)
+            & oos["state_b"].eq(state_b)
+        ].copy()
+
+        if oos_match.empty:
+            overall_direction = None
+        else:
+            overall_direction = str(
+                oos_match.iloc[0].get(
+                    "dominant_outcome",
+                    "",
+                )
+                or ""
+            )
+
+            if overall_direction not in {
+                "UP",
+                "DOWN",
+                "FLAT",
+            }:
+                up_pct = float(
+                    oos_match.iloc[0]["up_pct"]
+                )
+
+                mean_ret = float(
+                    oos_match.iloc[0]["mean_return_5d"]
+                )
+
+                overall_direction = (
+                    "UP"
+                    if up_pct >= 50
+                    else (
+                        "DOWN"
+                        if mean_ret < 0
+                        else "FLAT"
+                    )
+                )
+
+        applicable = episodes[
+            episodes["scenario"].eq(scenario)
+        ].copy()
+
+        applicable = applicable.sort_values(
+            "episode_id"
+        )
+
+        candidate_episode_rows = []
+
+        for _, ep in applicable.iterrows():
+
+            frame = candidate_rows[
+                candidate_rows["trade_date"].between(
+                    ep["start_date"],
+                    ep["end_date"],
+                )
+            ].copy()
+
+            if len(frame) < min_episode_observations:
+                continue
+
+            dominant, prob = _dominant(frame)
+
+            success = (
+                overall_direction is not None
+                and dominant == overall_direction
+                and prob >= min_dominant_probability
+            )
+
+            down, flat, up = _label_counts(frame)
+
+            row = {
+                "candidate": key,
+                "scenario": scenario,
+                "factor_a": factor_a,
+                "factor_b": factor_b,
+                "state_a": state_a,
+                "state_b": state_b,
+                "episode_id": int(ep["episode_id"]),
+                "start_date": ep["start_date"].date().isoformat(),
+                "end_date": ep["end_date"].date().isoformat(),
+                "trading_days": int(ep["trading_days"]),
+                "observations": len(frame),
+                "down_count": down,
+                "flat_count": flat,
+                "up_count": up,
+                "down_pct": down / len(frame) * 100,
+                "flat_pct": flat / len(frame) * 100,
+                "up_pct": up / len(frame) * 100,
+                "mean_return_5d": float(
+                    frame["return_5d"].mean()
+                ),
+                "median_return_5d": float(
+                    frame["return_5d"].median()
+                ),
+                "dominant_outcome": dominant,
+                "dominant_probability": prob,
+                "overall_oos_direction": overall_direction,
+                "success": bool(success),
+            }
+
+            episode_rows.append(row)
+            candidate_episode_rows.append(row)
+
+        epf = pd.DataFrame(candidate_episode_rows)
+
+        scenario_frame = dataset[
+            dataset["scenario"].eq(scenario)
+        ]
+
+        if epf.empty:
+
+            summary_rows.append(
+                {
+                    "candidate": key,
+                    "scenario": scenario,
+                    "factor_a": factor_a,
+                    "factor_b": factor_b,
+                    "state_a": state_a,
+                    "state_b": state_b,
+                    "episode_count": 0,
+                    "successful_episode_count": 0,
+                    "failure_episode_count": 0,
+                    "success_rate": None,
+                    "observations": len(candidate_rows),
+                    "dominant_outcome": overall_direction,
+                    "dominant_probability": None,
+                    "mean_return_5d": (
+                        float(
+                            candidate_rows[
+                                "return_5d"
+                            ].mean()
+                        )
+                        if len(candidate_rows)
+                        else None
+                    ),
+                    "median_return_5d": (
+                        float(
+                            candidate_rows[
+                                "return_5d"
+                            ].median()
+                        )
+                        if len(candidate_rows)
+                        else None
+                    ),
+                    "baseline_probability": (
+                        float(
+                            (
+                                scenario_frame[
+                                    "return_5d"
+                                ]
+                                > 0.5
+                            ).mean()
+                            * 100
+                        )
+                        if len(scenario_frame)
+                        else None
+                    ),
+                    "uplift_vs_baseline": None,
+                    "return_uplift_vs_baseline": None,
+                    "stability": "INSUFFICIENT_EPISODES",
+                    "episode_details": "",
+                }
+            )
+
+            continue
+
+        successes = int(
+            epf["success"].sum()
+        )
+
+        count = len(epf)
+
+        baseline_prob = float(
+            (
+                scenario_frame["return_5d"] > 0.5
+            ).mean()
+            * 100
+        )
+
+        candidate_up = float(
+            (
+                candidate_rows["return_5d"] > 0.5
+            ).mean()
+            * 100
+        ) if len(candidate_rows) else None
+
+        baseline_mean = float(
+            scenario_frame["return_5d"].mean()
+        )
+
+        candidate_mean = float(
+            candidate_rows["return_5d"].mean()
+        )
+
+        if count == 1:
+            stability = "SINGLE_EPISODE"
+        elif successes == 0:
+            stability = "INSUFFICIENT_EPISODES"
+        elif successes / count < 0.67:
+            stability = "WEAK_REPEATABILITY"
+        elif successes / count < 0.80:
+            stability = "MODERATE_REPEATABILITY"
+        else:
+            stability = "STRONG_REPEATABILITY"
+
+        details = ";".join(
+            (
+                f"E{int(row.episode_id)}:"
+                f"{row.start_date}->{row.end_date};"
+                f"n={row.observations};"
+                f"{row.dominant_outcome}="
+                f"{row.dominant_probability:.2f}%;"
+                f"success={str(row.success)}"
+            )
+            for row in epf.itertuples()
+        )
+
+        summary_rows.append(
+            {
+                "candidate": key,
+                "scenario": scenario,
+                "factor_a": factor_a,
+                "factor_b": factor_b,
+                "state_a": state_a,
+                "state_b": state_b,
+                "episode_count": count,
+                "successful_episode_count": successes,
+                "failure_episode_count": count - successes,
+                "success_rate": successes / count * 100,
+                "observations": len(candidate_rows),

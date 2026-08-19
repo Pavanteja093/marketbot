@@ -1,0 +1,1308 @@
+﻿FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 35
+CODE: """Load factor/outcome observations without assuming a legacy schema."""
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 191
+CODE: print("\nNo matched factor/outcome observations.")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 192
+CODE: return {"observations": 0}
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 198
+CODE: print(f"\nObservations : {len(df):,}")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 216
+CODE: "observations": len(df),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 29
+CODE: # 120 trading days of training followed by 20 trading days of testing,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 30
+CODE: # advanced by one test window.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 31
+CODE: TRAIN_DAYS = 120
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 32
+CODE: TEST_DAYS = 20
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 53
+CODE: """Load factor/outcome observations using the existing MarketBot schema."""
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 185
+CODE: Convert signed training ICs into stable research weights.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 198
+CODE: def _train_factor_model(train: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 200
+CODE: Leakage-safe training model.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 202
+CODE: Uses only TRAIN observations to estimate factor directions and magnitude
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 203
+CODE: weights. The TEST set is never consulted here.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 209
+CODE: train.groupby("trade_date", sort=True)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 273
+CODE: # IMPORTANT: this helper is only called on TRAIN when fitting. For TEST,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 284
+CODE: train: pd.DataFrame,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 288
+CODE: interaction = _build_interaction(train, left, right)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 290
+CODE: work = train[
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 329
+CODE: top, bottom, spread, top_win, observations = _period_top_bottom(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 337
+CODE: if observations
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 342
+CODE: "observations": observations,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 358
+CODE: top, bottom, spread, top_win, observations = _daily_top_bottom(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 372
+CODE: "observations": observations,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 386
+CODE: int(daily["observations"].sum()),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 392
+CODE: train_days: int = TRAIN_DAYS,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 393
+CODE: test_days: int = TEST_DAYS,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 398
+CODE: while start + train_days + test_days <= len(dates):
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 399
+CODE: train_dates = dates[start : start + train_days]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 400
+CODE: test_dates = dates[
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 401
+CODE: start + train_days : start + train_days + test_days
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 404
+CODE: yield window, train_dates, test_dates
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 406
+CODE: start += test_days
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 412
+CODE: train_days: int = TRAIN_DAYS,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 413
+CODE: test_days: int = TEST_DAYS,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 420
+CODE: for window, train_dates, test_dates in _walk_forward_windows(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 422
+CODE: train_days,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 423
+CODE: test_days,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 425
+CODE: train_start = train_dates[0]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 426
+CODE: train_end = train_dates[-1]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 427
+CODE: test_start = test_dates[0]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 428
+CODE: test_end = test_dates[-1]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 430
+CODE: train = df[df["trade_date"].isin(train_dates)].copy()
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 431
+CODE: test = df[df["trade_date"].isin(test_dates)].copy()
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 433
+CODE: directions, weights = _train_factor_model(train)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 437
+CODE: print(f"Train : {train_start.date()} -> {train_end.date()}")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 438
+CODE: print(f"Test  : {test_start.date()} -> {test_end.date()}")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 440
+CODE: print("\nTRAIN FACTOR MODEL")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 448
+CODE: # Baseline and each candidate are fitted using TRAIN only.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 449
+CODE: test_work = test.copy()
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 451
+CODE: baseline_test = _build_baseline_score(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 452
+CODE: test_work,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 456
+CODE: test_work["baseline_score"] = baseline_test
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 459
+CODE: test_work,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 467
+CODE: train,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 474
+CODE: test_work["candidate_score"] = _build_candidate_score_frozen(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 475
+CODE: test_work,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 484
+CODE: test_work,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 497
+CODE: "train_mean_ic": coefficient * 2.0,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 499
+CODE: "test_score_ic": evaluation["score_ic"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 500
+CODE: "test_spread": evaluation["spread"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 501
+CODE: "test_top_return": evaluation["top_return"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 502
+CODE: "test_bottom_return": evaluation["bottom_return"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 540
+CODE: "train_start": train_start.date(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 541
+CODE: "train_end": train_end.date(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 542
+CODE: "test_start": test_start.date(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 543
+CODE: "test_end": test_end.date(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 626
+CODE: print("\nNo matched factor/outcome observations.")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 627
+CODE: return {"decision": "FAIL", "observations": 0}
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 629
+CODE: print(f"\nObservations : {len(df):,}")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 678
+CODE: "observations": len(df),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 4
+CODE: MarketBot - Scenario × Weapon Chronological Holdout Validation
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 10
+CODE: Take the existing genuine date-level OOS observations produced by the
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 12
+CODE: dates, and perform a chronological holdout evaluation for eligible
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 29
+CODE: holdout on their resulting OOS observations.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 39
+CODE: The first portion is the discovery/train portion.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 40
+CODE: The final portion is the untouched chronological holdout.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 42
+CODE: A holdout is never randomly shuffled.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 78
+CODE: MIN_TOTAL_OBSERVATIONS = 20
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 79
+CODE: MIN_HOLDOUT_OBSERVATIONS = 5
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 80
+CODE: HOLDOUT_FRACTION = 0.30
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 131
+CODE: "observations",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 264
+CODE: ["test_date", "spread"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 269
+CODE: frame["test_date"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 306
+CODE: ["test_date", "spread"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 311
+CODE: frame["test_date"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 326
+CODE: Collect genuine date-level OOS observations from all three existing
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 449
+CODE: holdout_fraction: float = HOLDOUT_FRACTION,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 452
+CODE: Return train and holdout sizes.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 454
+CODE: The holdout is always the newest chronological observations.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 456
+CODE: if n < MIN_TOTAL_OBSERVATIONS:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 459
+CODE: holdout = max(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 460
+CODE: MIN_HOLDOUT_OBSERVATIONS,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 461
+CODE: int(np.ceil(n * holdout_fraction)),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 464
+CODE: train = n - holdout
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 466
+CODE: if train < MIN_HOLDOUT_OBSERVATIONS:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 469
+CODE: return train, holdout
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 480
+CODE: "observations": 0,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 489
+CODE: "observations": int(len(values)),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 500
+CODE: def evaluate_holdout(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 502
+CODE: min_total: int = MIN_TOTAL_OBSERVATIONS,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 507
+CODE: This function never shuffles observations.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 536
+CODE: "research_status": "INSUFFICIENT_HOLDOUT_HISTORY",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 537
+CODE: "train_observations": n,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 538
+CODE: "holdout_observations": 0,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 539
+CODE: "train_start": (
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 543
+CODE: "train_end": (
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 547
+CODE: "holdout_start": None,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 548
+CODE: "holdout_end": None,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 549
+CODE: "train_average_spread": metrics["average_spread"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 550
+CODE: "train_median_spread": metrics["median_spread"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 551
+CODE: "train_positive_day_pct": metrics["positive_day_pct"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 560
+CODE: train_n, holdout_n = _split_index(n)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 562
+CODE: if holdout_n == 0:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 566
+CODE: "train_observations": n,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 567
+CODE: "holdout_observations": 0,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 568
+CODE: "train_start": work["trade_date"].min(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 569
+CODE: "train_end": work["trade_date"].max(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 570
+CODE: "holdout_start": None,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 571
+CODE: "holdout_end": None,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 572
+CODE: "train_average_spread": None,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 573
+CODE: "train_median_spread": None,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 574
+CODE: "train_positive_day_pct": None,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 583
+CODE: train = work.iloc[:train_n].copy()
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 584
+CODE: holdout = work.iloc[train_n:].copy()
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 586
+CODE: train_metrics = _metrics(train["spread"])
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 587
+CODE: oos_metrics = _metrics(holdout["spread"])
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 589
+CODE: train_positive = train_metrics["average_spread"] > 0
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 595
+CODE: train_positive
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 614
+CODE: "train_observations": train_n,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 615
+CODE: "holdout_observations": holdout_n,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 616
+CODE: "train_start": train["trade_date"].min(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 617
+CODE: "train_end": train["trade_date"].max(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 618
+CODE: "holdout_start": holdout["trade_date"].min(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 619
+CODE: "holdout_end": holdout["trade_date"].max(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 620
+CODE: "train_average_spread": train_metrics["average_spread"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 621
+CODE: "train_median_spread": train_metrics["median_spread"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 622
+CODE: "train_positive_day_pct": train_metrics["positive_day_pct"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 658
+CODE: result = evaluate_holdout(subset)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 667
+CODE: "historical_observations": int(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 789
+CODE: "holdout validation."
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 828
+CODE: f"Candidate OOS observations : "
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 846
+CODE: "historical_observations",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 847
+CODE: "train_observations",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 848
+CODE: "holdout_observations",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 849
+CODE: "train_average_spread",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 24
+CODE: TRAIN_DAYS = 120
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 25
+CODE: TEST_DAYS = 20
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 26
+CODE: MIN_TOTAL_OBSERVATIONS = TRAIN_DAYS + TEST_DAYS
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 27
+CODE: MIN_HOLDOUT_OBSERVATIONS = 1
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 77
+CODE: def _insufficient(candidate, scenario_id, fingerprint, observations, reason=None):
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 80
+CODE: "research_status": "INSUFFICIENT_HOLDOUT_HISTORY", "oos_result": "NOT_READY",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 81
+CODE: "holdout_observations": 0, "scenario_matched_observations": int(observations),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 90
+CODE: "holdout_observations": 0, "scenario_matched_observations": 0,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 107
+CODE: if len(spreads) < MIN_HOLDOUT_OBSERVATIONS:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 112
+CODE: "holdout_observations": int(len(spreads)),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 133
+CODE: if dates < MIN_TOTAL_OBSERVATIONS:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 144
+CODE: if dates < MIN_TOTAL_OBSERVATIONS:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 146
+CODE: result = module.run(subset, train_days=TRAIN_DAYS, test_days=TEST_DAYS)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 155
+CODE: if dates < MIN_TOTAL_OBSERVATIONS:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 37
+CODE: MIN_TOTAL_OBSERVATIONS = 20
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 38
+CODE: MIN_HOLDOUT_OBSERVATIONS = 5
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 39
+CODE: TRAIN_DAYS = 120
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 40
+CODE: TEST_DAYS = 20
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 44
+CODE: "oos_result", "scenario_matched_observations", "train_observations",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 45
+CODE: "holdout_observations", "train_start", "train_end", "holdout_start",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 46
+CODE: "holdout_end", "execution_reason",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 111
+CODE: def chronological_holdout(frame: pd.DataFrame, date_col: str,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 112
+CODE: train_days: int = TRAIN_DAYS,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 113
+CODE: holdout_days: int = MIN_HOLDOUT_OBSERVATIONS):
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 114
+CODE: """Chronological split only; train is strictly earlier than holdout."""
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 121
+CODE: if len(dates) < train_days + holdout_days:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 123
+CODE: train_dates = dates[:len(dates) - holdout_days][-train_days:]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 124
+CODE: test_dates = dates[len(dates) - holdout_days:]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 125
+CODE: train = work.loc[work[date_col].isin(train_dates)].copy()
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 126
+CODE: test = work.loc[work[date_col].isin(test_dates)].copy()
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 127
+CODE: if train.empty or test.empty or train[date_col].max() >= test[date_col].min():
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 129
+CODE: return train.reset_index(drop=True), test.reset_index(drop=True)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 136
+CODE: "research_status": "INSUFFICIENT_HOLDOUT_HISTORY",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 138
+CODE: "scenario_matched_observations": int(matched),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 139
+CODE: "train_observations": 0, "holdout_observations": 0,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 162
+CODE: "Existing Track-C methodology returned no OOS observations.")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 181
+CODE: spread_col = next((c for c in ("incremental_spread", "test_spread", "spread")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 190
+CODE: if len(spreads) < MIN_HOLDOUT_OBSERVATIONS:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 192
+CODE: "Fewer than 5 genuine OOS holdout observations.")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 198
+CODE: "scenario_matched_observations": int(matched),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 199
+CODE: "train_observations": None, "holdout_observations": int(len(spreads)),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 200
+CODE: "train_start": None, "train_end": None,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 201
+CODE: "holdout_start": None, "holdout_end": None,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 225
+CODE: if matched < MIN_TOTAL_OBSERVATIONS:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 230
+CODE: result = runner(subset, train_days=TRAIN_DAYS, test_days=TEST_DAYS)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\track_c_oos_interface.py
+LINE: 238
+CODE: result = runner(subset, cfg_cls(train_days=TRAIN_DAYS, test_days=TEST_DAYS))
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 13
+CODE: The existing OOS artifact establishes exactly 50 observations for this
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 14
+CODE: candidate. In the supplied historical dataset, the same 50 observations are
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 65
+CODE: return pd.DataFrame(columns=["episode_id", "start_date", "end_date", "trading_days", "observations"])
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 88
+CODE: return pd.DataFrame(rows, columns=["episode_id", "start_date", "end_date", "trading_days", "observations"])
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 100
+CODE: "observations": n,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 118
+CODE: raise RuntimeError(f"Candidate reconstruction expected 50 observations from the OOS artifact, got {len(candidate)}")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 124
+CODE: expected = int(target.iloc[0]["observations"])
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 137
+CODE: # A success means UP is dominant and >= 70%, with at least 5 observations.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 138
+CODE: success = bool(s["observations"] >= 5 and s["dominant_outcome"] == "UP" and s["dominant_probability"] >= 70.0)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 176
+CODE: "observations": len(candidate),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 187
+CODE: f"E{int(r.episode_id)}:{r.start_date}->{r.end_date};n={int(r.observations)};UP={r.up_pct:.2f}%;mean={r.mean_return_5d:.4f};success={bool(r.success)}"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 206
+CODE: print(f"Dataset observations : {len(load_dataset(args.dataset))}")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 207
+CODE: print(f"HIGH_VOL observations: {len(build_candidate(load_dataset(args.dataset)))} candidate observations")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 47
+CODE: "observations",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 50
+CODE: "oos_folds",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 51
+CODE: "oos_stability",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 207
+CODE: min_episode_observations: int = 1,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 213
+CODE: or min_episode_observations < 1
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 267
+CODE: and obs >= min_episode_observations
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 276
+CODE: "observations": obs,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 298
+CODE: and obs >= min_episode_observations
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 307
+CODE: "observations": obs,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 387
+CODE: min_episode_observations: int = 20,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 465
+CODE: if len(frame) < min_episode_observations:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 489
+CODE: "observations": len(frame),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 531
+CODE: "observations": len(candidate_rows),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 617
+CODE: f"n={row.observations};"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 637
+CODE: "observations": len(candidate_rows),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 673
+CODE: min_episode_observations: int = 20,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 686
+CODE: min_episode_observations=1,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 694
+CODE: min_episode_observations=min_episode_observations,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 756
+CODE: "--min-episode-observations",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 775
+CODE: min_episode_observations=args.min_episode_observations,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 791
+CODE: f"Dataset observations : {len(dataset)}"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 800
+CODE: f"Candidates tested    : {len(candidates)}"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 819
+CODE: "observations",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 30
+CODE: "observations", "up_pct", "mean_return_5d", "oos_folds", "oos_stability",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 67
+CODE: min_episode_observations: int = 1,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 69
+CODE: if max_gap_days < 1 or min_episode_days < 1 or min_episode_observations < 1:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 90
+CODE: if len(part) >= min_episode_days and obs >= min_episode_observations:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 97
+CODE: "observations": obs,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 104
+CODE: if len(part) >= min_episode_days and obs >= min_episode_observations:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 111
+CODE: "observations": obs,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 138
+CODE: min_episode_observations: int = 20,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 172
+CODE: if len(frame) < min_episode_observations:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 189
+CODE: "observations": len(frame),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 209
+CODE: "success_rate": None, "observations": len(candidate_rows),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 239
+CODE: f"E{int(r.episode_id)}:{r.start_date}->{r.end_date};n={r.observations};"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 248
+CODE: "observations": len(candidate_rows),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 269
+CODE: min_episode_observations: int = 20,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 278
+CODE: min_episode_observations=1,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 282
+CODE: min_episode_observations=min_episode_observations,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 296
+CODE: parser.add_argument("--min-episode-observations", type=int, default=20)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 304
+CODE: min_episode_observations=args.min_episode_observations,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 311
+CODE: print(f"Dataset observations : {len(dataset)}")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 313
+CODE: print(f"Candidates tested    : {len(CANDIDATES)}")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi_backup.py
+LINE: 319
+CODE: "failure_episode_count","success_rate","observations",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 37
+CODE: MIN_TRAIN_DATES = 60
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 38
+CODE: TEST_DATES = 20
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 41
+CODE: MIN_OOS_OBSERVATIONS = 20
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 45
+CODE: train: pd.DataFrame,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 46
+CODE: test: pd.DataFrame,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 51
+CODE: Learn HIGH/LOW thresholds strictly from training data,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 52
+CODE: then apply those thresholds to both train and future test data.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 55
+CODE: threshold_a = train[feature_a].median()
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 56
+CODE: threshold_b = train[feature_b].median()
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 58
+CODE: train = train.copy()
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 59
+CODE: test = test.copy()
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 61
+CODE: train["state_a"] = (
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 62
+CODE: train[feature_a] >= threshold_a
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 68
+CODE: train["state_b"] = (
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 69
+CODE: train[feature_b] >= threshold_b
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 75
+CODE: test["state_a"] = (
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 76
+CODE: test[feature_a] >= threshold_a
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 82
+CODE: test["state_b"] = (
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 83
+CODE: test[feature_b] >= threshold_b
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 89
+CODE: return train, test, threshold_a, threshold_b
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 156
+CODE: f"Observations : {len(df):,}"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 168
+CODE: folds = []
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 170
+CODE: start = MIN_TRAIN_DATES
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 174
+CODE: test_end = min(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 175
+CODE: start + TEST_DATES,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 179
+CODE: train_dates = dates[:start]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 181
+CODE: test_dates = dates[start:test_end]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 183
+CODE: train = df[
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 186
+CODE: .isin(train_dates)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 189
+CODE: test = df[
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 192
+CODE: .isin(test_dates)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 195
+CODE: if test.empty:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 199
+CODE: f"\nOOS fold: "
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 200
+CODE: f"{train_dates[0].date()} -> "
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 201
+CODE: f"{train_dates[-1].date()} | "
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 202
+CODE: f"test "
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 203
+CODE: f"{test_dates[0].date()} -> "
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 204
+CODE: f"{test_dates[-1].date()}"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 212
+CODE: train_states, test_states, threshold_a, threshold_b = (
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 214
+CODE: train,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 215
+CODE: test,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 222
+CODE: test_states["scenario"].unique()
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 225
+CODE: scenario_test = test_states[
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 226
+CODE: test_states["scenario"] == scenario
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 233
+CODE: subset = scenario_test[
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 234
+CODE: (scenario_test["state_a"] == state_a)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 236
+CODE: (scenario_test["state_b"] == state_b)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 239
+CODE: if len(subset) < MIN_OOS_OBSERVATIONS:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 257
+CODE: "train_start": train_dates[0].date().isoformat(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 258
+CODE: "train_end": train_dates[-1].date().isoformat(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 259
+CODE: "test_start": test_dates[0].date().isoformat(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 260
+CODE: "test_end": test_dates[-1].date().isoformat(),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 261
+CODE: "observations": int(len(subset)),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 290
+CODE: folds.append(results)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 294
+CODE: if not folds:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 296
+CODE: "No interaction produced sufficient OOS observations."
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 299
+CODE: fold_df = pd.DataFrame(folds)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 312
+CODE: fold_df
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 318
+CODE: observations=("observations", "sum"),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 324
+CODE: oos_folds=("test_start", "count"),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 330
+CODE: / aggregate["observations"]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 336
+CODE: / aggregate["observations"]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 342
+CODE: / aggregate["observations"]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 374
+CODE: # A relationship appearing in only one fold is weaker
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 375
+CODE: # than one repeating across several independent folds.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 376
+CODE: aggregate["oos_stability"] = aggregate[
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 377
+CODE: "oos_folds"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 384
+CODE: else "SINGLE_FOLD"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 390
+CODE: "oos_folds",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 391
+CODE: "observations",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 34
+CODE: MIN_OBSERVATIONS = 100
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 74
+CODE: print(f"Observations : {len(df):,}")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 83
+CODE: if len(scenario_df) < MIN_OBSERVATIONS:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 88
+CODE: f"{len(scenario_df):,} observations"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 125
+CODE: if len(subset) < MIN_OBSERVATIONS:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 144
+CODE: "observations": len(subset),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 170
+CODE: "observations",
+------------------------------------------------------------

@@ -1,0 +1,12 @@
+table_name,required,exists,row_count,latest_value,reference_market_date,null_issues,duplicate_groups,status,reason
+indices_daily,True,True,741,2026-08-10,2026-08-10,0,0,HEALTHY,No configured integrity issues detected.
+stocks_daily,True,True,12342,2026-08-10,2026-08-10,0,0,HEALTHY,No configured integrity issues detected.
+fii_dii_daily,True,True,20,2026-06-05,2026-08-10,0,1,WARNING,1 duplicate key group(s) detected.
+factor_history,True,True,11411,2026-08-10,2026-08-10,0,0,HEALTHY,No configured integrity issues detected.
+signal_history,True,True,0,,2026-08-10,0,0,CRITICAL,Required table is empty.
+signal_history_v2,True,True,10,2026-08-09,2026-08-10,0,0,WARNING,Latest date 2026-08-09 does not match reference market date 2026-08-10.
+market_regime,True,True,0,,2026-08-10,0,0,CRITICAL,Required table is empty.
+market_scenario_history,True,True,247,2026-08-10,2026-08-10,0,0,HEALTHY,No configured integrity issues detected.
+options_summary,True,True,0,,2026-08-10,0,0,CRITICAL,Required table is empty.
+indices_intraday,False,True,0,,2026-08-10,0,0,WARNING,Optional table is empty.
+option_chain_history,False,True,3591,2026-08-10 14:23:03,2026-08-10,0,0,HEALTHY,No configured integrity issues detected.

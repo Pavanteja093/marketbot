@@ -1,0 +1,7 @@
+candidate,scenario,factor_a,state_a,factor_b,state_b,total_candidate_observations,total_scenario_episodes,episodes_with_candidate,episode_coverage_pct,qualifying_episodes_ge_20,max_episode_observations,mean_observations_per_occupied_episode,median_observations_per_occupied_episode,max_episode_concentration_pct,episode_observation_distribution
+TREND_UP|trend_score=HIGH|momentum_score=HIGH,TREND_UP,trend_score,HIGH,momentum_score,HIGH,49,19,13,68.42105263157895,0,13,3.769230769230769,3.0,26.53061224489796,"1,1,1,2,2,3,3,3,5,5,5,5,13"
+TREND_UP|relative_strength=HIGH|trend_score=HIGH,TREND_UP,relative_strength,HIGH,trend_score,HIGH,0,19,0,0.0,0,0,0.0,0.0,0.0,
+TREND_UP|change_pct=HIGH|trend_score=HIGH,TREND_UP,change_pct,HIGH,trend_score,HIGH,0,19,0,0.0,0,0,0.0,0.0,0.0,
+TREND_UP|trend_score=HIGH|volatility_score=HIGH,TREND_UP,trend_score,HIGH,volatility_score,HIGH,64,19,12,63.1578947368421,0,12,5.333333333333333,4.0,18.75,"1,1,2,3,4,4,4,5,7,9,12,12"
+TREND_UP|trend_score=HIGH|volatility_score=LOW,TREND_UP,trend_score,HIGH,volatility_score,LOW,0,19,0,0.0,0,0,0.0,0.0,0.0,
+TREND_UP|intelligence_score=HIGH|trend_score=HIGH,TREND_UP,intelligence_score,HIGH,trend_score,HIGH,134,19,16,84.21052631578947,1,26,8.375,7.5,19.402985074626866,"1,1,2,2,2,5,6,7,8,8,8,10,14,15,19,26"

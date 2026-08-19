@@ -1,4 +1,4 @@
-import sqlite3
+﻿import sqlite3
 from pathlib import Path
 
 import pandas as pd
@@ -30,7 +30,7 @@ def factor_research():
     JOIN forward_returns r
 
         ON date(f.trade_date)=date(r.trade_date)
-       AND f.index_name=r.symbol
+       AND f.index_name=r.index_name
 
     WHERE r.return_5d IS NOT NULL
     """
@@ -150,3 +150,4 @@ def factor_research():
 if __name__ == "__main__":
 
     factor_research()
+

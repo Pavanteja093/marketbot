@@ -1,0 +1,190 @@
+﻿
+    for factor in FACTOR_COLUMNS:
+        work[factor] = pd.to_numeric(
+            work[factor],
+            errors="coerce",
+        )
+
+    work["return_5d"] = pd.to_numeric(
+        work["return_5d"],
+        errors="coerce",
+    )
+
+    work = work.dropna(
+        subset=["return_5d"]
+    ).copy()
+
+    work = _add_factor_states(work)
+
+    return (
+        work.sort_values(
+            ["trade_date", "index_name"],
+            kind="mergesort",
+        )
+        .reset_index(drop=True)
+    )
+
+
+def load_oos(
+    path: Path = DEFAULT_OOS,
+) -> pd.DataFrame:
+    df = pd.read_csv(path)
+
+    _require_columns(
+        df,
+        REQUIRED_OOS_COLUMNS,
+        "track_c_interaction_oos_validation",
+    )
+
+    return df.copy(deep=True)
+
+
+def build_scenario_episodes(
+    dataset: pd.DataFrame,
+    *,
+    max_gap_days: int = 3,
+    min_episode_days: int = 1,
+    min_episode_observations: int = 1,
+) -> pd.DataFrame:
+
+    if (
+        max_gap_days < 1
+        or min_episode_days < 1
+        or min_episode_observations < 1
+    ):
+        raise ValueError(
+            "episode thresholds must be positive"
+        )
+
+    dates = (
+        dataset.loc[:, ["trade_date", "scenario"]]
+        .drop_duplicates()
+        .sort_values(
+            ["scenario", "trade_date"],
+            kind="mergesort",
+        )
+    )
+
+    rows = []
+
+    for scenario, group in dates.groupby(
+        "scenario",
+        sort=True,
+    ):
+        g = (
+            group.sort_values("trade_date")
+            .reset_index(drop=True)
+        )
+
+        if g.empty:
+            continue
+
+        episode = 1
+        start = 0
+
+        for i in range(1, len(g)):
+            gap = (
+                g.loc[i, "trade_date"]
+                - g.loc[i - 1, "trade_date"]
+            ).days
+
+            if gap > max_gap_days:
+                part = g.iloc[start:i]
+
+                obs = int(
+                    dataset[
+                        (dataset["scenario"] == scenario)
+                        & (
+                            dataset["trade_date"].isin(
+                                part["trade_date"]
+                            )
+                        )
+                    ].shape[0]
+                )
+
+                if (
+                    len(part) >= min_episode_days
+                    and obs >= min_episode_observations
+                ):
+                    rows.append(
+                        {
+                            "scenario": scenario,
+                            "episode_id": episode,
+                            "start_date": part["trade_date"].min(),
+                            "end_date": part["trade_date"].max(),
+                            "trading_days": len(part),
+                            "observations": obs,
+                        }
+                    )
+                    episode += 1
+
+                start = i
+
+        part = g.iloc[start:]
+
+        obs = int(
+            dataset[
+                (dataset["scenario"] == scenario)
+                & (
+                    dataset["trade_date"].isin(
+                        part["trade_date"]
+                    )
+                )
+            ].shape[0]
+        )
+
+        if (
+            len(part) >= min_episode_days
+            and obs >= min_episode_observations
+        ):
+            rows.append(
+                {
+                    "scenario": scenario,
+                    "episode_id": episode,
+                    "start_date": part["trade_date"].min(),
+                    "end_date": part["trade_date"].max(),
+                    "trading_days": len(part),
+                    "observations": obs,
+                }
+            )
+
+    return pd.DataFrame(rows)
+
+
+def _label_counts(
+    frame: pd.DataFrame,
+) -> tuple[int, int, int]:
+
+    up = int(
+        (frame["return_5d"] > 0.5).sum()
+    )
+
+    down = int(
+        (frame["return_5d"] < -0.5).sum()
+    )
+
+    flat = int(
+        (
+            (frame["return_5d"] >= -0.5)
+            & (frame["return_5d"] <= 0.5)
+        ).sum()
+    )
+
+    return down, flat, up
+
+
+def _dominant(
+    frame: pd.DataFrame,
+) -> tuple[str, float]:
+
+    down, flat, up = _label_counts(frame)
+
+    counts = {
+        "DOWN": down,
+        "FLAT": flat,
+        "UP": up,
+    }
+
+    outcome = max(
+        counts,
+        key=lambda k: (

@@ -1,10 +1,10 @@
-import time
+﻿import time
 import sqlite3
 
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from option_chain_upstox import collect_all_indices
+from data_collectors.option_chain_upstox import collect_all_indices
 
 DB_PATH = r"C:\Users\pavan\Documents\Python\Marketbot\market_intelligence.db"
 

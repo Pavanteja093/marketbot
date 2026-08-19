@@ -63,6 +63,46 @@ def run_module(
         return not required
 
 
+def run_track_a_validation():
+    print("\n" + "-" * 70)
+    print("Track-A Outcome Validation")
+    print("-" * 70)
+
+    db = BASE_DIR / "market_intelligence.db"
+
+    try:
+        result = subprocess.run(
+            [
+                PYTHON,
+                "-m",
+                "track_a.runner",
+                "validate",
+                "--db",
+                str(db),
+                "--json",
+            ],
+            cwd=BASE_DIR,
+            text=True,
+            capture_output=True,
+        )
+
+        if result.stdout:
+            print(result.stdout)
+
+        if result.returncode != 0:
+            print("FAILED: track_a validation")
+            if result.stderr:
+                print(result.stderr)
+            return False
+
+        print("SUCCESS: track_a validation")
+        return True
+
+    except Exception as exc:
+        print(f"ERROR running Track-A validation: {exc}")
+        return False
+
+
 def main():
 
     print("\n" + "=" * 75)
@@ -349,6 +389,9 @@ def main():
         ):
 
             failures.append(module)
+
+    if not run_track_a_validation():
+        failures.append("track_a.runner validate")
 
     # ========================================================
     # FINAL STATUS

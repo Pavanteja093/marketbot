@@ -1,0 +1,434 @@
+﻿   1: from __future__ import annotations
+   2: 
+   3: from itertools import combinations
+   4: from pathlib import Path
+   5: 
+   6: import pandas as pd
+   7: 
+   8: 
+   9: BASE_DIR = Path(__file__).resolve().parent.parent
+  10: 
+  11: INPUT = (
+  12:     BASE_DIR
+  13:     / "research"
+  14:     / "artifacts"
+  15:     / "historical_probability_dataset.csv"
+  16: )
+  17: 
+  18: OUTPUT = (
+  19:     BASE_DIR
+  20:     / "research"
+  21:     / "artifacts"
+  22:     / "track_c_interaction_oos_validation.csv"
+  23: )
+  24: 
+  25: FEATURES = [
+  26:     "change_pct",
+  27:     "intelligence_score",
+  28:     "relative_strength",
+  29:     "trend_score",
+  30:     "momentum_score",
+  31:     "volatility_score",
+  32:     "liquidity_score",
+  33: ]
+  34: 
+  35: CLASSES = ["DOWN", "FLAT", "UP"]
+  36: 
+  37: MIN_TRAIN_DATES = 60
+  38: TEST_DATES = 20
+  39: STEP_DATES = 20
+  40: 
+  41: MIN_OOS_OBSERVATIONS = 20
+  42: 
+  43: 
+  44: def assign_states(
+  45:     train: pd.DataFrame,
+  46:     test: pd.DataFrame,
+  47:     feature_a: str,
+  48:     feature_b: str,
+  49: ):
+  50:     """
+  51:     Learn HIGH/LOW thresholds strictly from training data,
+  52:     then apply those thresholds to both train and future test data.
+  53:     """
+  54: 
+  55:     threshold_a = train[feature_a].median()
+  56:     threshold_b = train[feature_b].median()
+  57: 
+  58:     train = train.copy()
+  59:     test = test.copy()
+  60: 
+  61:     train["state_a"] = (
+  62:         train[feature_a] >= threshold_a
+  63:     ).map({
+  64:         True: "HIGH",
+  65:         False: "LOW",
+  66:     })
+  67: 
+  68:     train["state_b"] = (
+  69:         train[feature_b] >= threshold_b
+  70:     ).map({
+  71:         True: "HIGH",
+  72:         False: "LOW",
+  73:     })
+  74: 
+  75:     test["state_a"] = (
+  76:         test[feature_a] >= threshold_a
+  77:     ).map({
+  78:         True: "HIGH",
+  79:         False: "LOW",
+  80:     })
+  81: 
+  82:     test["state_b"] = (
+  83:         test[feature_b] >= threshold_b
+  84:     ).map({
+  85:         True: "HIGH",
+  86:         False: "LOW",
+  87:     })
+  88: 
+  89:     return train, test, threshold_a, threshold_b
+  90: 
+  91: 
+  92: def main():
+  93: 
+  94:     print("\n" + "=" * 78)
+  95:     print("MARKETBOT TRACK C - INTERACTION OOS VALIDATION")
+  96:     print("=" * 78)
+  97: 
+  98:     df = pd.read_csv(INPUT)
+  99: 
+ 100:     required = {
+ 101:         "trade_date",
+ 102:         "scenario",
+ 103:         "label",
+ 104:         "return_5d",
+ 105:         *FEATURES,
+ 106:     }
+ 107: 
+ 108:     missing = sorted(
+ 109:         required - set(df.columns)
+ 110:     )
+ 111: 
+ 112:     if missing:
+ 113:         raise ValueError(
+ 114:             "Missing required columns: "
+ 115:             + ", ".join(missing)
+ 116:         )
+ 117: 
+ 118:     df["trade_date"] = pd.to_datetime(
+ 119:         df["trade_date"],
+ 120:         errors="coerce",
+ 121:     )
+ 122: 
+ 123:     for column in FEATURES + ["return_5d"]:
+ 124:         df[column] = pd.to_numeric(
+ 125:             df[column],
+ 126:             errors="coerce",
+ 127:         )
+ 128: 
+ 129:     df["label"] = df["label"].astype(str)
+ 130: 
+ 131:     df = (
+ 132:         df.dropna(
+ 133:             subset=[
+ 134:                 "trade_date",
+ 135:                 "scenario",
+ 136:                 "label",
+ 137:                 "return_5d",
+ 138:                 *FEATURES,
+ 139:             ]
+ 140:         )
+ 141:         .sort_values(
+ 142:             ["trade_date", "index_name"]
+ 143:             if "index_name" in df.columns
+ 144:             else ["trade_date"]
+ 145:         )
+ 146:         .reset_index(drop=True)
+ 147:     )
+ 148: 
+ 149:     dates = sorted(
+ 150:         df["trade_date"]
+ 151:         .dt.normalize()
+ 152:         .unique()
+ 153:     )
+ 154: 
+ 155:     print(
+ 156:         f"Observations : {len(df):,}"
+ 157:     )
+ 158: 
+ 159:     print(
+ 160:         f"Trading dates: {len(dates):,}"
+ 161:     )
+ 162: 
+ 163:     print(
+ 164:         f"Scenarios    : "
+ 165:         f"{df['scenario'].nunique():,}"
+ 166:     )
+ 167: 
+ 168:     folds = []
+ 169: 
+ 170:     start = MIN_TRAIN_DATES
+ 171: 
+ 172:     while start < len(dates):
+ 173: 
+ 174:         test_end = min(
+ 175:             start + TEST_DATES,
+ 176:             len(dates),
+ 177:         )
+ 178: 
+ 179:         train_dates = dates[:start]
+ 180: 
+ 181:         test_dates = dates[start:test_end]
+ 182: 
+ 183:         train = df[
+ 184:             df["trade_date"]
+ 185:             .dt.normalize()
+ 186:             .isin(train_dates)
+ 187:         ].copy()
+ 188: 
+ 189:         test = df[
+ 190:             df["trade_date"]
+ 191:             .dt.normalize()
+ 192:             .isin(test_dates)
+ 193:         ].copy()
+ 194: 
+ 195:         if test.empty:
+ 196:             break
+ 197: 
+ 198:         print(
+ 199:             f"\nOOS fold: "
+ 200:             f"{train_dates[0].date()} -> "
+ 201:             f"{train_dates[-1].date()} | "
+ 202:             f"test "
+ 203:             f"{test_dates[0].date()} -> "
+ 204:             f"{test_dates[-1].date()}"
+ 205:         )
+ 206: 
+ 207:         for feature_a, feature_b in combinations(
+ 208:             FEATURES,
+ 209:             2,
+ 210:         ):
+ 211: 
+ 212:             train_states, test_states, threshold_a, threshold_b = (
+ 213:                 assign_states(
+ 214:                     train,
+ 215:                     test,
+ 216:                     feature_a,
+ 217:                     feature_b,
+ 218:                 )
+ 219:             )
+ 220: 
+ 221:             for scenario in sorted(
+ 222:                 test_states["scenario"].unique()
+ 223:             ):
+ 224: 
+ 225:                 scenario_test = test_states[
+ 226:                     test_states["scenario"] == scenario
+ 227:                 ]
+ 228: 
+ 229:                 for state_a in ["LOW", "HIGH"]:
+ 230: 
+ 231:                     for state_b in ["LOW", "HIGH"]:
+ 232: 
+ 233:                         subset = scenario_test[
+ 234:                             (scenario_test["state_a"] == state_a)
+ 235:                             &
+ 236:                             (scenario_test["state_b"] == state_b)
+ 237:                         ]
+ 238: 
+ 239:                         if len(subset) < MIN_OOS_OBSERVATIONS:
+ 240:                             continue
+ 241: 
+ 242:                         counts = (
+ 243:                             subset["label"]
+ 244:                             .value_counts()
+ 245:                             .reindex(
+ 246:                                 CLASSES,
+ 247:                                 fill_value=0,
+ 248:                             )
+ 249:                         )
+ 250: 
+ 251:                         results = {
+ 252:                             "scenario": scenario,
+ 253:                             "factor_a": feature_a,
+ 254:                             "factor_b": feature_b,
+ 255:                             "state_a": state_a,
+ 256:                             "state_b": state_b,
+ 257:                             "train_start": train_dates[0].date().isoformat(),
+ 258:                             "train_end": train_dates[-1].date().isoformat(),
+ 259:                             "test_start": test_dates[0].date().isoformat(),
+ 260:                             "test_end": test_dates[-1].date().isoformat(),
+ 261:                             "observations": int(len(subset)),
+ 262:                             "down_count": int(counts["DOWN"]),
+ 263:                             "flat_count": int(counts["FLAT"]),
+ 264:                             "up_count": int(counts["UP"]),
+ 265:                             "down_pct": float(
+ 266:                                 counts["DOWN"]
+ 267:                                 / len(subset)
+ 268:                                 * 100
+ 269:                             ),
+ 270:                             "flat_pct": float(
+ 271:                                 counts["FLAT"]
+ 272:                                 / len(subset)
+ 273:                                 * 100
+ 274:                             ),
+ 275:                             "up_pct": float(
+ 276:                                 counts["UP"]
+ 277:                                 / len(subset)
+ 278:                                 * 100
+ 279:                             ),
+ 280:                             "mean_return_5d": float(
+ 281:                                 subset["return_5d"].mean()
+ 282:                             ),
+ 283:                             "median_return_5d": float(
+ 284:                                 subset["return_5d"].median()
+ 285:                             ),
+ 286:                             "threshold_a": float(threshold_a),
+ 287:                             "threshold_b": float(threshold_b),
+ 288:                         }
+ 289: 
+ 290:                         folds.append(results)
+ 291: 
+ 292:         start += STEP_DATES
+ 293: 
+ 294:     if not folds:
+ 295:         raise RuntimeError(
+ 296:             "No interaction produced sufficient OOS observations."
+ 297:         )
+ 298: 
+ 299:     fold_df = pd.DataFrame(folds)
+ 300: 
+ 301:     group_columns = [
+ 302:         "scenario",
+ 303:         "factor_a",
+ 304:         "factor_b",
+ 305:         "state_a",
+ 306:         "state_b",
+ 307:     ]
+ 308: 
+ 309:     # IMPORTANT:
+ 310:     # Aggregate counts, not percentages.
+ 311:     aggregate = (
+ 312:         fold_df
+ 313:         .groupby(
+ 314:             group_columns,
+ 315:             as_index=False,
+ 316:         )
+ 317:         .agg(
+ 318:             observations=("observations", "sum"),
+ 319:             down_count=("down_count", "sum"),
+ 320:             flat_count=("flat_count", "sum"),
+ 321:             up_count=("up_count", "sum"),
+ 322:             mean_return_5d=("mean_return_5d", "mean"),
+ 323:             median_return_5d=("median_return_5d", "mean"),
+ 324:             oos_folds=("test_start", "count"),
+ 325:         )
+ 326:     )
+ 327: 
+ 328:     aggregate["down_pct"] = (
+ 329:         aggregate["down_count"]
+ 330:         / aggregate["observations"]
+ 331:         * 100
+ 332:     )
+ 333: 
+ 334:     aggregate["flat_pct"] = (
+ 335:         aggregate["flat_count"]
+ 336:         / aggregate["observations"]
+ 337:         * 100
+ 338:     )
+ 339: 
+ 340:     aggregate["up_pct"] = (
+ 341:         aggregate["up_count"]
+ 342:         / aggregate["observations"]
+ 343:         * 100
+ 344:     )
+ 345: 
+ 346:     aggregate["dominant_outcome"] = (
+ 347:         aggregate[
+ 348:             [
+ 349:                 "down_pct",
+ 350:                 "flat_pct",
+ 351:                 "up_pct",
+ 352:             ]
+ 353:         ]
+ 354:         .idxmax(axis=1)
+ 355:         .str.replace(
+ 356:             "_pct",
+ 357:             "",
+ 358:             regex=False,
+ 359:         )
+ 360:         .str.upper()
+ 361:     )
+ 362: 
+ 363:     aggregate["dominant_probability_pct"] = (
+ 364:         aggregate[
+ 365:             [
+ 366:                 "down_pct",
+ 367:                 "flat_pct",
+ 368:                 "up_pct",
+ 369:             ]
+ 370:         ].max(axis=1)
+ 371:     )
+ 372: 
+ 373:     # OOS stability:
+ 374:     # A relationship appearing in only one fold is weaker
+ 375:     # than one repeating across several independent folds.
+ 376:     aggregate["oos_stability"] = aggregate[
+ 377:         "oos_folds"
+ 378:     ].map(
+ 379:         lambda x:
+ 380:             "REPEATED"
+ 381:             if x >= 3
+ 382:             else "EARLY"
+ 383:             if x >= 2
+ 384:             else "SINGLE_FOLD"
+ 385:     )
+ 386: 
+ 387:     aggregate = aggregate.sort_values(
+ 388:         [
+ 389:             "dominant_probability_pct",
+ 390:             "oos_folds",
+ 391:             "observations",
+ 392:         ],
+ 393:         ascending=[
+ 394:             False,
+ 395:             False,
+ 396:             False,
+ 397:         ],
+ 398:     ).reset_index(drop=True)
+ 399: 
+ 400:     print("\n" + "-" * 78)
+ 401:     print("TOP OOS INTERACTIONS")
+ 402:     print("-" * 78)
+ 403: 
+ 404:     print(
+ 405:         aggregate.head(40).to_string(
+ 406:             index=False,
+ 407:             float_format=lambda x: f"{x:.2f}",
+ 408:         )
+ 409:     )
+ 410: 
+ 411:     OUTPUT.parent.mkdir(
+ 412:         parents=True,
+ 413:         exist_ok=True,
+ 414:     )
+ 415: 
+ 416:     aggregate.to_csv(
+ 417:         OUTPUT,
+ 418:         index=False,
+ 419:     )
+ 420: 
+ 421:     print(
+ 422:         f"\nSaved: {OUTPUT}"
+ 423:     )
+ 424: 
+ 425:     print("\nRESEARCH ONLY")
+ 426:     print("SQLite writes      : NONE")
+ 427:     print("Production changes : NONE")
+ 428:     print("Weight changes     : NONE")
+ 429:     print("Weapon promotion   : NONE")
+ 430:     print("STATUS             : SUCCESS")
+ 431: 
+ 432: 
+ 433: if __name__ == "__main__":
+ 434:     main()

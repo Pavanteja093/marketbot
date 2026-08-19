@@ -1,6 +1,6 @@
-# analytics/market_explainer.py
+﻿# analytics/market_explainer.py
 
-from global_markets import get_global_markets
+from analytics.global_markets import get_global_markets
 
 
 def get_market_explanations():

@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,39 +20,20 @@ def alpha_signal_v3():
 
     conn = sqlite3.connect(str(DB_PATH))
 
-    regime = pd.read_sql(
+    regime_df = pd.read_sql(
         """
-        SELECT regime
+        SELECT market_regime AS regime
         FROM market_regime
         ORDER BY trade_date DESC
         LIMIT 1
         """,
         conn
-    ).iloc[0]["regime"]
-
-    query = """
-    SELECT
-
-        h.symbol,
-        h.sector,
-        h.sector_strength,
-        h.intelligence_score,
-
-        f.position_52w,
-        f.volume_expansion
-
-    FROM factor_history h
-
-    JOIN factor_library f
-
-      ON date(h.trade_date)=date(f.trade_date)
-     AND h.symbol=f.symbol
-
-    WHERE h.trade_date = (
-        SELECT MAX(trade_date)
-        FROM factor_history
     )
-    """
+
+    if regime_df.empty:
+        regime = "UNKNOWN"
+    else:
+        regime = regime_df.iloc[0]["regime"]
 
     df = pd.read_sql(query, conn)
 
@@ -116,3 +97,4 @@ def alpha_signal_v3():
 if __name__ == "__main__":
 
     alpha_signal_v3()
+

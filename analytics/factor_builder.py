@@ -1,4 +1,4 @@
-import sqlite3
+﻿import sqlite3
 from pathlib import Path
 
 import pandas as pd
@@ -74,11 +74,11 @@ def build_factors():
             stock["avg_volume_20"]
         )
 
-        factor_rows.append(
-            stock[
-                [
+        stock = stock.rename(columns={"symbol": "index_name"})        
+        factor_rows.append(            
+            stock[[
                     "trade_date",
-                    "symbol",
+                    "index_name",                    
                     "position_52w",
                     "breakout_distance",
                     "volume_expansion"
@@ -92,6 +92,11 @@ def build_factors():
     )
 
     factor_df = factor_df.dropna()
+
+    # factor_library uses the canonical identifier: index_name.
+    factor_df = factor_df.rename(
+        columns={"symbol": "index_name"}
+    )
 
     conn.execute(
         """

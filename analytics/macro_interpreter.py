@@ -1,6 +1,6 @@
-from market_regime import get_market_regime
-from sector_strength import get_sector_strength
-from fii_dii_tracker import get_fii_dii
+﻿from analytics.market_regime import get_market_regime
+from analytics.sector_strength import get_sector_strength
+from analytics.fii_dii_tracker import get_fii_dii
 from analytics.stock_scoring import get_stock_scores
 
 # ----------------------------------
@@ -79,3 +79,5 @@ for stock in focus_stocks:
     print(
         f"- {stock}"
     )
+
+

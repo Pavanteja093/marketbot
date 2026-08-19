@@ -1,0 +1,116 @@
+﻿import sqlite3
+from pathlib import Path
+
+import pandas as pd
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DB_PATH = BASE_DIR / "market_intelligence.db"
+
+
+def build_factors():
+
+    conn = sqlite3.connect(str(DB_PATH))
+
+    df = pd.read_sql(
+        """
+        SELECT
+            trade_date,
+            symbol,
+            close,
+            volume
+        FROM stocks_daily
+        ORDER BY trade_date
+        """,
+        conn
+    )
+
+    factor_rows = []
+
+    for symbol in df["symbol"].unique():
+
+        stock = (
+            df[df["symbol"] == symbol]
+            .copy()
+            .sort_values("trade_date")
+        )
+
+        stock["high_252"] = (
+            stock["close"]
+            .rolling(252, min_periods=20)
+            .max()
+        )
+
+        stock["low_252"] = (
+            stock["close"]
+            .rolling(252, min_periods=20)
+            .min()
+        )
+
+        stock["avg_volume_20"] = (
+            stock["volume"]
+            .rolling(20, min_periods=5)
+            .mean()
+        )
+
+        stock["position_52w"] = (
+            (
+                stock["close"] -
+                stock["low_252"]
+            )
+            /
+            (
+                stock["high_252"] -
+                stock["low_252"]
+            )
+        ) * 100
+
+        stock["breakout_distance"] = (
+            stock["close"] /
+            stock["high_252"]
+        )
+
+        stock["volume_expansion"] = (
+            stock["volume"] /
+            stock["avg_volume_20"]
+        )
+
+        stock = stock.rename(columns={"symbol": "index_name"})`r`n`r`n        factor_rows.append(`r`n            stock[[
+                    "trade_date",
+                    "index_name",`r`n                    "position_52w",
+                    "breakout_distance",
+                    "volume_expansion"
+                ]
+            ]
+        )
+
+    factor_df = pd.concat(
+        factor_rows,
+        ignore_index=True
+    )
+
+    factor_df = factor_df.dropna()
+
+    conn.execute(
+        """
+        DELETE FROM factor_library
+        """
+    )
+
+    factor_df.to_sql(
+        "factor_library",
+        conn,
+        if_exists="append",
+        index=False
+    )
+
+    conn.commit()
+    conn.close()
+
+    print(
+        f"Saved {len(factor_df):,} factor records"
+    )
+
+
+if __name__ == "__main__":
+
+    build_factors()

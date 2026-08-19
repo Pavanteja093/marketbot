@@ -11,7 +11,9 @@ conn = sqlite3.connect(str(DB_PATH))
 query = """
 SELECT
 
+    f.index_name AS symbol,
     f.position_52w,
+    f.index_name AS symbol,
     f.volume_expansion,
 
     h.sector_strength,
@@ -23,12 +25,12 @@ FROM factor_library f
 JOIN factor_history h
 
   ON date(f.trade_date)=date(h.trade_date)
- AND f.symbol=h.symbol
+ AND f.index_name=h.symbol
 
 JOIN forward_returns r
 
   ON date(f.trade_date)=date(r.trade_date)
- AND f.symbol=r.symbol
+ AND f.index_name=r.symbol
 
 WHERE r.return_20d IS NOT NULL
 """

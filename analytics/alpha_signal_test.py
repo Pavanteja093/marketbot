@@ -1,4 +1,4 @@
-import sqlite3
+﻿import sqlite3
 import pandas as pd
 from pathlib import Path
 
@@ -20,7 +20,7 @@ FROM factor_library f
 JOIN forward_returns r
 
 ON date(f.trade_date)=date(r.trade_date)
-AND f.symbol=r.symbol
+AND f.index_name=r.index_name
 
 WHERE r.return_20d IS NOT NULL
 """

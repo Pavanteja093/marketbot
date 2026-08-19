@@ -75,7 +75,7 @@ def get_market_brain() -> dict:
 
     conn = get_connection()
 
-    symbols = ["NIFTY", "BANKNIFTY", "FINNIFTY"]
+    symbols = ["SENSEX", "NIFTY", "BANKNIFTY", "FINNIFTY"]
 
     results = {}
 

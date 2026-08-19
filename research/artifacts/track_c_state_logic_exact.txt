@@ -1,0 +1,1508 @@
+﻿FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 22
+CODE: def _resolve_entity_column(conn, table: str) -> str:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 34
+CODE: def load_data(db_path=DB_PATH) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 73
+CODE: def cross_sectional_rank(df: pd.DataFrame, columns=FACTORS) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 83
+CODE: def build_interactions(df: pd.DataFrame):
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 98
+CODE: def _daily_ic(group: pd.DataFrame, column: str) -> float:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 109
+CODE: def interaction_diagnostics(df: pd.DataFrame, interactions) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 144
+CODE: def quintile_spreads(df: pd.DataFrame, interactions) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 150
+CODE:         def assign(group):
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 157
+CODE:         )[column]  # placeholder overwritten below
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_analyzer.py
+LINE: 183
+CODE: def analyze(db_path=DB_PATH):
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 29
+CODE: # 120 trading days of training followed by 20 trading days of testing,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 36
+CODE: def _resolve_entity_column(conn: sqlite3.Connection, table: str) -> str:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 52
+CODE: def load_data(db_path: Path = DB_PATH) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 115
+CODE: def _rank_cross_section(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 125
+CODE: def _build_interaction(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 137
+CODE: def _daily_spearman(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 155
+CODE: def _daily_top_bottom(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 183
+CODE: def _normalise_weights(ic: pd.Series) -> pd.Series:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 198
+CODE: def _train_factor_model(train: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 229
+CODE: def _build_baseline_score(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 245
+CODE: def _build_candidate_score(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 256
+CODE:     that the experiment measures incremental value rather than allowing an
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 283
+CODE: def _fit_interaction_coefficient(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 311
+CODE: def _build_candidate_score_frozen(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 325
+CODE: def _evaluate_period(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 351
+CODE: def _period_top_bottom(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 390
+CODE: def _walk_forward_windows(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 410
+CODE: def run_walk_forward(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 559
+CODE: def research_verdict(results: pd.DataFrame) -> dict:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\factor_interaction_walk_forward.py
+LINE: 618
+CODE: def analyze(db_path: Path = DB_PATH) -> dict:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 22
+CODE:     HIGH_VOL
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 23
+CODE:     LOW_VOL
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 49
+CODE:     "HIGH_VOL",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 50
+CODE:     "LOW_VOL",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 59
+CODE:     "high",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 60
+CODE:     "low",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 66
+CODE: def classify_scenario(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 76
+CODE:         1. HIGH_VOL
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 80
+CODE:         5. LOW_VOL
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 83
+CODE:     LOW_VOL represents a genuinely compressed-volatility environment,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 90
+CODE:     # High volatility takes priority.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 92
+CODE:         return "HIGH_VOL"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 108
+CODE:     # Low-volatility, compressed but non-flat environment.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 113
+CODE:         return "LOW_VOL"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 119
+CODE: def make_fingerprint(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 143
+CODE: def _bucket(value: float, thresholds: tuple[float, ...]) -> str:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 148
+CODE:         return "LOW"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 153
+CODE:     return "HIGH"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 156
+CODE: def _ensure_table(conn: sqlite3.Connection) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 191
+CODE: def _validate_schema(conn: sqlite3.Connection) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 206
+CODE: def _load_nifty(conn: sqlite3.Connection) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 218
+CODE:             high,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 219
+CODE:             low,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 245
+CODE:         "high",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 246
+CODE:         "low",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 260
+CODE:                 "high",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 261
+CODE:                 "low",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 273
+CODE: def build_features(df: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 295
+CODE:         (x["high"] - x["low"])
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 302
+CODE: def build_scenarios(df: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 363
+CODE: def _existing_scenario_ids(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 380
+CODE: def _next_unexplored_id(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 391
+CODE: def assign_scenario_ids(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 428
+CODE: def write_scenarios(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 485
+CODE: def run(db_path: str | Path = DEFAULT_DB) -> dict:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\market_scenario_registry.py
+LINE: 535
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\rebuild_market_scenario_history.py
+LINE: 42
+CODE: def _existing_id_map(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\rebuild_market_scenario_history.py
+LINE: 54
+CODE:         Highest numeric UNEXPLORED_N ID currently present.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\rebuild_market_scenario_history.py
+LINE: 79
+CODE: def _assign_preserving_existing_ids(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\rebuild_market_scenario_history.py
+LINE: 121
+CODE: def _insert_rows(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\rebuild_market_scenario_history.py
+LINE: 178
+CODE: def rebuild(db_path: Path = DEFAULT_DB) -> dict:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\rebuild_market_scenario_history.py
+LINE: 217
+CODE:         # Everything below is one transaction.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\rebuild_market_scenario_history.py
+LINE: 280
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_coverage_audit.py
+LINE: 64
+CODE: def load_scenarios(db_path: str | Path) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_coverage_audit.py
+LINE: 93
+CODE: def load_matrix(matrix_path: str | Path) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_coverage_audit.py
+LINE: 106
+CODE: def build_audit(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_coverage_audit.py
+LINE: 165
+CODE:     def classify(row: pd.Series) -> str:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_coverage_audit.py
+LINE: 182
+CODE:     ).clip(lower=0)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_coverage_audit.py
+LINE: 186
+CODE:     ).clip(lower=0)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_coverage_audit.py
+LINE: 219
+CODE: def run(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_coverage_audit.py
+LINE: 238
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 35
+CODE: def load_data(db_path=DB_PATH) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 70
+CODE: def validate_input(frame: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 79
+CODE: def _factor_state(value: float) -> str:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 83
+CODE:         return "LOW"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 87
+CODE:         return "HIGH"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 88
+CODE:     return "VERY_HIGH"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 91
+CODE: def build_evidence(frame: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 110
+CODE:         subset["factor_state"] = subset[factor_name].map(_factor_state)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 112
+CODE:         for state in ["LOW", "MEDIUM", "HIGH", "VERY_HIGH"]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 113
+CODE:             state_df = subset[subset["factor_state"] == state]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 124
+CODE:                     "factor_state": state,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 149
+CODE:                 "factor_state",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 165
+CODE:             "factor_state",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 171
+CODE: def run(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 185
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_conditional_evidence.py
+LINE: 219
+CODE:                     "factor_state",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_predictive_strength.py
+LINE: 19
+CODE:     "primary_scenario", "factor", "factor_state", "observations",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_predictive_strength.py
+LINE: 34
+CODE: def _validate_evidence(df: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_predictive_strength.py
+LINE: 40
+CODE: def _baseline_stats(db_path: Path):
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_predictive_strength.py
+LINE: 71
+CODE: def _classify(row):
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_predictive_strength.py
+LINE: 88
+CODE: def assess_predictive_strength(evidence, scenario_baselines, global_baseline):
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_predictive_strength.py
+LINE: 113
+CODE:          "primary_scenario", "factor", "factor_state"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_predictive_strength.py
+LINE: 117
+CODE: def run(input_path=DEFAULT_INPUT, output_path=DEFAULT_OUTPUT, db_path=DB_PATH):
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_predictive_strength.py
+LINE: 126
+CODE: def main():
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_predictive_strength.py
+LINE: 136
+CODE:     cols=["primary_scenario","factor","factor_state","observations","positive_5d_pct",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_reliability.py
+LINE: 40
+CODE:     "primary_scenario", "factor", "factor_state", "observations", "scenario_dates",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_reliability.py
+LINE: 57
+CODE: def _numeric(work: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_reliability.py
+LINE: 67
+CODE: def _consistency(row: pd.Series) -> bool:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_reliability.py
+LINE: 74
+CODE: def _score(row: pd.Series) -> float:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_reliability.py
+LINE: 87
+CODE: def classify_relationship(row: pd.Series) -> tuple[str, float, str]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_reliability.py
+LINE: 128
+CODE: def assess_evidence(df: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_reliability.py
+LINE: 143
+CODE: def run(input_path: Path = INPUT_ARTIFACT, output_path: Path = OUTPUT_ARTIFACT) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_reliability.py
+LINE: 147
+CODE:         ["reliability_score", "observations", "primary_scenario", "factor", "factor_state"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_reliability.py
+LINE: 156
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_reliability.py
+LINE: 175
+CODE:     cols = ["primary_scenario", "factor", "factor_state", "observations", "reliability_status", "reliability_score"]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 42
+CODE:     "primary_scenario", "factor", "factor_state",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 64
+CODE:     "positive_rate_ci_low",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 65
+CODE:     "positive_rate_ci_high",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 67
+CODE:     "mean_difference_ci_low",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 68
+CODE:     "mean_difference_ci_high",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 82
+CODE: def _require(df: pd.DataFrame, columns: list[str], name: str) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 88
+CODE: def _numeric(df: pd.DataFrame, columns: list[str], name: str) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 98
+CODE: def wilson_interval(positive_pct: float, observations: int,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 114
+CODE: def _range_normalized_effect(mean_lift: float, worst: float, best: float) -> float:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 122
+CODE: def validate_inputs(conditional: pd.DataFrame,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 130
+CODE: def validate_no_duplicate_keys(df: pd.DataFrame, name: str) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 131
+CODE:     keys = ["primary_scenario", "factor", "factor_state"]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 136
+CODE: def _join_inputs(conditional: pd.DataFrame,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 152
+CODE:         ["primary_scenario", "factor", "factor_state",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 157
+CODE:         ["primary_scenario", "factor", "factor_state",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 164
+CODE:         rel, on=["primary_scenario", "factor", "factor_state"], how="left", validate="one_to_one"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 166
+CODE:         pred, on=["primary_scenario", "factor", "factor_state"], how="left", validate="one_to_one"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 175
+CODE: def _classify(row: pd.Series, ci_low: float, ci_high: float,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 180
+CODE:     excludes = ci_low > 50.0 or ci_high < 50.0
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 189
+CODE:         direction = "positive" if ci_low > 50 else "negative"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 193
+CODE:                 f"({ci_low:.2f}% to {ci_high:.2f}%) with {direction} direction; "
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 197
+CODE:             f"Wilson 95% CI excludes 50% ({ci_low:.2f}% to {ci_high:.2f}%); "
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 213
+CODE: def assess_statistical_validation(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 228
+CODE:         ci_low, ci_high = wilson_interval(row["positive_5d_pct"], obs)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 235
+CODE:         status, reason = _classify(row, ci_low, ci_high, effect)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 243
+CODE:             "positive_rate_ci_low": ci_low,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 244
+CODE:             "positive_rate_ci_high": ci_high,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 245
+CODE:             "positive_rate_ci_excludes_50": bool(ci_low > 50 or ci_high < 50),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 246
+CODE:             "mean_difference_ci_low": float("nan"),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 247
+CODE:             "mean_difference_ci_high": float("nan"),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 260
+CODE:          "primary_scenario", "factor", "factor_state"],
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 266
+CODE: def run(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 281
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 303
+CODE:         "primary_scenario", "factor", "factor_state", "observations",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_factor_statistical_validation.py
+LINE: 304
+CODE:         "positive_5d_pct", "positive_rate_ci_low", "positive_rate_ci_high",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 15
+CODE:     HIGH_VOL
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 16
+CODE:     LOW_VOL
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 84
+CODE: def load_data(db_path: Path = DEFAULT_DB) -> tuple[pd.DataFrame, pd.DataFrame]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 139
+CODE: def load_nifty_scenarios(db_path: Path = DEFAULT_DB) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 218
+CODE:             scenario = "HIGH_VOL"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 221
+CODE:             scenario = "LOW_VOL"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 241
+CODE: def normalize_factor_series(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 263
+CODE: def score_weapon(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 302
+CODE: def evaluate_day(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 348
+CODE: def run_scenario_walk_forward(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 372
+CODE:                 "HIGH_VOL",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 373
+CODE:                 "LOW_VOL",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 419
+CODE:             "HIGH_VOL",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 420
+CODE:             "LOW_VOL",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 456
+CODE: def summarize(results: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 502
+CODE: def apply_candidate_gate(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_candidate.py
+LINE: 532
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_decision_gate.py
+LINE: 47
+CODE: def validate_input(frame: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_decision_gate.py
+LINE: 57
+CODE: def decide_row(row: pd.Series) -> tuple[str, str]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_decision_gate.py
+LINE: 147
+CODE: def build_decisions(frame: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_decision_gate.py
+LINE: 187
+CODE: def run(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_decision_gate.py
+LINE: 209
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 71
+CODE:     "HIGH": 2,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 73
+CODE:     "LOW": 4,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 77
+CODE: def validate_input(frame: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 87
+CODE: def classify_eligibility(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 122
+CODE: def classify_priority(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 133
+CODE:     HIGH:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 141
+CODE:     LOW:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 149
+CODE:         return "HIGH"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 152
+CODE:         return "HIGH"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 156
+CODE:             return "HIGH"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 159
+CODE:     return "LOW"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 162
+CODE: def recommended_action(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 182
+CODE: def build_eligibility(frame: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 313
+CODE: def run(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_eligibility.py
+LINE: 328
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_accumulator.py
+LINE: 44
+CODE: def validate_input(frame: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_accumulator.py
+LINE: 54
+CODE: def classify_evidence(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_accumulator.py
+LINE: 95
+CODE: def build_accumulation(frame: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_accumulator.py
+LINE: 157
+CODE: def run(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_accumulator.py
+LINE: 179
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 49
+CODE: def validate_input(frame: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 58
+CODE: def classify_priority(row: pd.Series) -> str:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 68
+CODE:         return "HIGH"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 71
+CODE:         return "HIGH"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 79
+CODE:     return "LOW"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 82
+CODE: def classify_action(row: pd.Series) -> str:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 100
+CODE: def build_plan(frame: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 118
+CODE:     ).clip(lower=0)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 122
+CODE:     ).clip(lower=0)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 128
+CODE:         "HIGH": 0,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 130
+CODE:         "LOW": 2,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 180
+CODE: def run(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_evidence_expansion_planner.py
+LINE: 196
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_matrix.py
+LINE: 46
+CODE: def validate_input(frame: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_matrix.py
+LINE: 56
+CODE: def _status_priority(status: str) -> int:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_matrix.py
+LINE: 58
+CODE:     Lower number = stronger evidence.
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_matrix.py
+LINE: 73
+CODE: def build_matrix(frame: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_matrix.py
+LINE: 110
+CODE:     #   2. higher mean OOS spread
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_matrix.py
+LINE: 111
+CODE:     #   3. higher median OOS spread
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_matrix.py
+LINE: 148
+CODE: def run(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_matrix.py
+LINE: 170
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 100
+CODE: def _require_columns(frame: pd.DataFrame, columns: list[str], name: str) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 108
+CODE: def load_eligible_candidates(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 145
+CODE: def load_scenario_history(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 198
+CODE: def load_baseline_results(db_path: Path) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 245
+CODE: def load_conditional_results(db_path: Path) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 282
+CODE: def load_agreement_results(db_path: Path = DEFAULT_DB) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 324
+CODE: def load_candidate_evidence(db_path: Path = DEFAULT_DB) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 380
+CODE: def attach_scenarios(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 447
+CODE: def _split_index(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 472
+CODE: def _metrics(spreads: pd.Series) -> dict:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 500
+CODE: def evaluate_holdout(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 632
+CODE: def build_oos_report(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 690
+CODE: def build_evidence_ledger(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 728
+CODE: def run(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_oos.py
+LINE: 785
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch.py
+LINE: 89
+CODE:     "HIGH": 0,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch.py
+LINE: 91
+CODE:     "LOW": 2,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch.py
+LINE: 95
+CODE: def validate_input(frame: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch.py
+LINE: 105
+CODE: def load_queue(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch.py
+LINE: 112
+CODE: def _normalise(frame: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch.py
+LINE: 178
+CODE: def _batch_action(queue_priority: str) -> str:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch.py
+LINE: 188
+CODE: def _batch_reason(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch.py
+LINE: 219
+CODE: def build_batches(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch.py
+LINE: 372
+CODE: def write_batches(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch.py
+LINE: 388
+CODE: def build_from_artifact(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch.py
+LINE: 405
+CODE: def _print_report(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch.py
+LINE: 575
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch_executor.py
+LINE: 131
+CODE: def _require_columns(frame: pd.DataFrame, columns: set[str], name: str) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch_executor.py
+LINE: 139
+CODE: def load_batches(path: Path = DEFAULT_BATCH_ARTIFACT) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch_executor.py
+LINE: 206
+CODE: def select_authorized_relationships(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch_executor.py
+LINE: 231
+CODE: def _load_oos_adapter() -> Any:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch_executor.py
+LINE: 236
+CODE: def _execute_track_c_relationship(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch_executor.py
+LINE: 265
+CODE: def _track_c_execution_status(result: dict) -> str:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch_executor.py
+LINE: 278
+CODE: def _candidate_evidence(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch_executor.py
+LINE: 310
+CODE: def _attach_scenarios(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch_executor.py
+LINE: 324
+CODE: def _safe_value(value: Any) -> Any:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch_executor.py
+LINE: 330
+CODE: def _result_row(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch_executor.py
+LINE: 390
+CODE: def execute(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_batch_executor.py
+LINE: 541
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 50
+CODE:     "HIGH": 0,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 52
+CODE:     "LOW": 2,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 56
+CODE: def validate_input(frame: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 65
+CODE: def _normalise(frame: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 98
+CODE: def classify_queue(row: pd.Series) -> tuple[str, str, str]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 126
+CODE:         if research_priority == "HIGH":
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 130
+CODE:                 "Researchable relationship with mature/high-priority scenario history and no OOS evidence.",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 144
+CODE:         if research_priority == "HIGH":
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 148
+CODE:                 "Scenario history exists and the relationship has no OOS evidence; high research priority.",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 153
+CODE:             "Scenario history exists but the relationship is lower research priority.",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 174
+CODE: def build_queue(frame: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 241
+CODE: def load_eligibility(path: Path = INPUT_ARTIFACT) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 246
+CODE: def write_queue(queue: pd.DataFrame, path: Path = OUTPUT_ARTIFACT) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 252
+CODE: def build_from_artifact(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 262
+CODE: def _print_report(queue: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_research_queue.py
+LINE: 300
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 30
+CODE: def validate_relationship(scenario_id: str, fingerprint: str, candidate: str) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 37
+CODE: def load_scenario_history(db_path: Path = DEFAULT_DB) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 61
+CODE: def filter_relationship(data: pd.DataFrame, history: pd.DataFrame,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 77
+CODE: def _insufficient(candidate, scenario_id, fingerprint, observations, reason=None):
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 86
+CODE: def _unsupported(candidate, scenario_id, fingerprint, reason):
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 95
+CODE: def _normalise(result: Any, candidate: str, scenario_id: str, fingerprint: str) -> dict:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 120
+CODE: def execute_track_c_relationship(scenario_id: str, fingerprint: str,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_track_c_oos_adapter.py
+LINE: 166
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_unified_report.py
+LINE: 79
+CODE: def validate_input(frame: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_unified_report.py
+LINE: 89
+CODE: def _numeric(frame: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_unified_report.py
+LINE: 101
+CODE: def _rank_candidates(work: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_unified_report.py
+LINE: 158
+CODE: def build_report(frame: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_unified_report.py
+LINE: 223
+CODE: def _build_conclusion(row: pd.Series) -> str:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_unified_report.py
+LINE: 254
+CODE: def run(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_unified_report.py
+LINE: 271
+CODE: def print_report(report: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_unified_report.py
+LINE: 350
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_validation.py
+LINE: 70
+CODE: def classify_evidence(n: int) -> str:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_validation.py
+LINE: 81
+CODE: def validate_input(frame: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_validation.py
+LINE: 91
+CODE: def build_validation(frame: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_validation.py
+LINE: 188
+CODE: def build_family_report(validation: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_validation.py
+LINE: 254
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_walk_forward.py
+LINE: 88
+CODE: def validate_input(frame: pd.DataFrame) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_walk_forward.py
+LINE: 98
+CODE: def _metrics(values: pd.Series) -> dict:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_walk_forward.py
+LINE: 121
+CODE: def _prepare_group(frame: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_walk_forward.py
+LINE: 145
+CODE: def _window_starts(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_walk_forward.py
+LINE: 179
+CODE: def evaluate_group(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_walk_forward.py
+LINE: 282
+CODE: def build_walk_forward(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_walk_forward.py
+LINE: 334
+CODE: def build_summary(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_walk_forward.py
+LINE: 440
+CODE: def run(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\scenario_weapon_walk_forward.py
+LINE: 484
+CODE: def main() -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 5
+CODE: This implementation deliberately focuses on the previously validated HIGH_VOL
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 11
+CODE:     HIGH_VOL + change_pct LOW + intelligence_score HIGH
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 31
+CODE: SCENARIO = "HIGH_VOL"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 34
+CODE: STATE_A = "LOW"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 35
+CODE: STATE_B = "HIGH"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 42
+CODE: def load_dataset(path: Path) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 55
+CODE: def build_candidate(df: pd.DataFrame) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 62
+CODE: def build_episodes(df: pd.DataFrame, max_gap_trading_days: int = 1, min_days: int = 1, trading_calendar: pd.DatetimeIndex | None = None) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 91
+CODE: def stats(frame: pd.DataFrame) -> dict:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 114
+CODE: def run(dataset_path: Path = DEFAULT_DATASET, oos_path: Path = DEFAULT_OOS, output_path: Path = DEFAULT_OUTPUT) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 121
+CODE:     target = oos[(oos.scenario == SCENARIO) & (oos.factor_a == FACTOR_A) & (oos.factor_b == FACTOR_B) & (oos.state_a == STATE_A) & (oos.state_b == STATE_B)]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 143
+CODE:             "state_a": STATE_A,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 144
+CODE:             "state_b": STATE_B,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 171
+CODE:         "state_a": STATE_A, "state_b": STATE_B,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 196
+CODE: def main() -> int:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 207
+CODE:     print(f"HIGH_VOL observations: {len(build_candidate(load_dataset(args.dataset)))} candidate observations")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability.py
+LINE: 208
+CODE:     print(f"HIGH_VOL dates       : {pd.to_datetime(episodes['start_date']).min().date() if not episodes.empty else 'NONE'} -> {pd.to_datetime(episodes['end_date']).max().date() if not episodes.empty else 'NONE'}")
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 15
+CODE:     ("TREND_UP", "trend_score", "HIGH", "momentum_score", "HIGH"),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 16
+CODE:     ("TREND_UP", "relative_strength", "HIGH", "trend_score", "HIGH"),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 17
+CODE:     ("TREND_UP", "change_pct", "HIGH", "trend_score", "HIGH"),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 18
+CODE:     ("TREND_UP", "trend_score", "HIGH", "volatility_score", "HIGH"),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 19
+CODE:     ("TREND_UP", "trend_score", "HIGH", "volatility_score", "LOW"),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 20
+CODE:     ("TREND_UP", "intelligence_score", "HIGH", "trend_score", "HIGH"),
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 29
+CODE:     "scenario", "factor_a", "factor_b", "state_a", "state_b",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 33
+CODE: def _require_columns(df: pd.DataFrame, required: set[str], name: str) -> None:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 38
+CODE: def _candidate_mask(df: pd.DataFrame, candidate: tuple[str, str, str, str, str]) -> pd.Series:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 46
+CODE: def load_dataset(path: Path = DEFAULT_DATASET) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 57
+CODE: def load_oos(path: Path = DEFAULT_OOS) -> pd.DataFrame:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 62
+CODE: def build_scenario_episodes(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 115
+CODE: def _label_counts(frame: pd.DataFrame) -> tuple[int, int, int]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 123
+CODE: def _dominant(frame: pd.DataFrame) -> tuple[str, float]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 129
+CODE: def _candidate_key(candidate: tuple[str, str, str, str, str]) -> str:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 133
+CODE: def evaluate_candidates(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 152
+CODE:             & oos["state_a"].eq(sa)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 154
+CODE:             & oos["state_b"].eq(sb)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 184
+CODE:                 "state_a": sa, "state_b": sb,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 207
+CODE:                 "state_a": sa, "state_b": sb, "episode_count": 0,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 245
+CODE:             "state_a": sa, "state_b": sb, "episode_count": count,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 262
+CODE: def run(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_episode_stability_multi.py
+LINE: 289
+CODE: def main() -> int:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 44
+CODE: def assign_states(
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 51
+CODE:     Learn HIGH/LOW thresholds strictly from training data,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 61
+CODE:     train["state_a"] = (
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 64
+CODE:         True: "HIGH",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 65
+CODE:         False: "LOW",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 68
+CODE:     train["state_b"] = (
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 71
+CODE:         True: "HIGH",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 72
+CODE:         False: "LOW",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 75
+CODE:     test["state_a"] = (
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 78
+CODE:         True: "HIGH",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 79
+CODE:         False: "LOW",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 82
+CODE:     test["state_b"] = (
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 85
+CODE:         True: "HIGH",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 86
+CODE:         False: "LOW",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 92
+CODE: def main():
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 229
+CODE:                 for state_a in ["LOW", "HIGH"]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 231
+CODE:                     for state_b in ["LOW", "HIGH"]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 234
+CODE:                             (scenario_test["state_a"] == state_a)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 236
+CODE:                             (scenario_test["state_b"] == state_b)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 255
+CODE:                             "state_a": state_a,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 256
+CODE:                             "state_b": state_b,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 305
+CODE:         "state_a",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_interaction_oos_validation.py
+LINE: 306
+CODE:         "state_b",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 37
+CODE: def main():
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 91
+CODE:         # Create within-scenario HIGH / LOW states
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 101
+CODE:                 True: "HIGH",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 102
+CODE:                 False: "LOW",
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 107
+CODE:             state_a = feature_a + "_state"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 108
+CODE:             state_b = feature_b + "_state"
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 114
+CODE:             work["state_a"] = states[state_a]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 115
+CODE:             work["state_b"] = states[state_b]
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 117
+CODE:             for state_a_value in ["LOW", "HIGH"]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 118
+CODE:                 for state_b_value in ["LOW", "HIGH"]:
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 121
+CODE:                         (work["state_a"] == state_a_value)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 122
+CODE:                         & (work["state_b"] == state_b_value)
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 142
+CODE:                             "state_a": state_a_value,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_factor_interactions.py
+LINE: 143
+CODE:                             "state_b": state_b_value,
+------------------------------------------------------------
+FILE: C:\Users\pavan\Documents\Python\Marketbot\research\v2_scenario_feature_power.py
+LINE: 34
+CODE: def main():
+------------------------------------------------------------

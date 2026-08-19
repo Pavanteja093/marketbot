@@ -1,0 +1,7 @@
+candidate,metric,status,decision,source_decision,evidence_unit,observations,average,median,positive_pct,worst,best,passed_checks,total_checks,error
+Baseline Failure Decomposition,spread,OK,FAIL,,days,100,-0.3577,-0.4014,41.0,-4.9624,,1,5,
+Conditional Score,spread,OK,FAIL,,days,100,-0.4472942999999999,-0.21694000000000024,44.0,,,2,5,
+Factor Agreement,spread,OK,FAIL,,days,100,-0.5486,-0.4737,42.0,-5.7562,,1,5,
+C2.1 Regime-Aware,spread,OK,FAIL,,walk_forward_windows,5,-0.6447800000000001,-0.7137,20.0,-1.6343,,2,5,
+C2.2 Regime-Aware,spread,OK,FAIL,,walk_forward_windows,5,-0.6447800000000001,-0.7137,20.0,-1.6343,,2,5,
+C3.3 Factor Interaction,incremental_spread,OK,FAIL,,interaction_windows,10,-0.01065,-0.00125,0.0,-0.0349,,2,5,

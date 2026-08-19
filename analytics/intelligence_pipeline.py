@@ -1,17 +1,22 @@
-from analytics.feature_engine import build_features
+from analytics.feature_engine import FeatureEngine
 from analytics.market_regime import detect_regime
 from analytics.confidence_engine import confidence_score
 from analytics.risk_engine import calculate_risk
 from analytics.intelligence_score_engine import intelligence_score
 
 
-def build_intelligence(option_data):
+def build_intelligence(history_df, stock_return, market_return):
 
     # -----------------------------------------
     # 1. BUILD BASE FEATURES
     # -----------------------------------------
 
-    features = build_features(option_data)
+    engine = FeatureEngine()
+    features = engine.build_features(
+        history_df,
+        stock_return,
+        market_return
+    )
 
     # -----------------------------------------
     # 2. INTELLIGENCE SCORE

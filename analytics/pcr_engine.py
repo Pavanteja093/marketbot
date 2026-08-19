@@ -6,6 +6,41 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DB_PATH = BASE_DIR / "market_intelligence.db"
 
+
+    
+def calculate_pcr(df):
+    """
+    Calculate aggregate Put/Call OI ratio for one option-chain snapshot.
+
+    Contract
+    --------
+    Returns:
+        float
+            Total put OI / total call OI.
+
+    Raises:
+        ValueError
+            If required OI columns are missing or call OI is zero.
+    """
+
+    required = {"call_oi", "put_oi"}
+
+    missing = required - set(df.columns)
+
+    if missing:
+        raise ValueError(
+            f"PCR calculation missing required columns: {sorted(missing)}"
+        )
+
+    call_oi = df["call_oi"].fillna(0).sum()
+    put_oi = df["put_oi"].fillna(0).sum()
+
+    if call_oi <= 0:
+        raise ValueError("PCR calculation requires positive total call OI")
+
+    return float(put_oi / call_oi)
+
+
 conn = sqlite3.connect(DB_PATH)
 
 query = """

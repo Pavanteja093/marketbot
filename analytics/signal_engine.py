@@ -1,7 +1,8 @@
 import sqlite3
 import pandas as pd
 from pathlib import Path
-from analytics.feature_engine import build_features
+from analytics.pcr_engine import calculate_pcr
+from analytics.oi_engine import calculate_oi_levels
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DB_PATH = BASE_DIR / "market_intelligence.db"
@@ -37,15 +38,15 @@ for symbol in sorted(df["symbol"].unique()):
 
     spot = temp["spot_price"].iloc[0]
 
-    features = build_features(temp)
+    pcr = calculate_pcr(temp)
 
-    pcr = features["pcr"]
+    oi_levels = calculate_oi_levels(temp)
 
-    support = features["support"]
+    support = oi_levels["support"]
 
-    resistance = features["resistance"]
+    resistance = oi_levels["resistance"]
 
-    range_width = features["range_width"]
+    range_width = oi_levels["range_width"]
 
     # --------------------------------------------------
     # Max Pain

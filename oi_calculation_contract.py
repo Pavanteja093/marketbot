@@ -76,49 +76,111 @@ for symbol in EXPECTED:
         failures.append(f"{symbol}: empty latest snapshot")
         continue
 
-    df["strike"] = pd.to_numeric(df["strike"], errors="coerce")
-    df["call_oi"] = pd.to_numeric(df["call_oi"], errors="coerce")
-    df["put_oi"] = pd.to_numeric(df["put_oi"], errors="coerce")
-    df["spot_price"] = pd.to_numeric(df["spot_price"], errors="coerce")
+    df["strike"] = pd.to_numeric(
+        df["strike"],
+        errors="coerce",
+    )
+
+    df["call_oi"] = pd.to_numeric(
+        df["call_oi"],
+        errors="coerce",
+    )
+
+    df["put_oi"] = pd.to_numeric(
+        df["put_oi"],
+        errors="coerce",
+    )
+
+    df["spot_price"] = pd.to_numeric(
+        df["spot_price"],
+        errors="coerce",
+    )
 
     df = df.dropna(
-        subset=["strike", "call_oi", "put_oi", "spot_price"]
+        subset=[
+            "strike",
+            "call_oi",
+            "put_oi",
+            "spot_price",
+        ]
     )
 
     spot = float(df["spot_price"].iloc[0])
 
+    # Create the two candidate sets.
     below = df[df["strike"] <= spot].copy()
     above = df[df["strike"] >= spot].copy()
 
     if below.empty:
-        failures.append(f"{symbol}: no support candidate <= spot")
+        failures.append(
+            f"{symbol}: no support strike at or below spot"
+        )
         continue
 
     if above.empty:
-        failures.append(f"{symbol}: no resistance candidate >= spot")
+        failures.append(
+            f"{symbol}: no resistance strike at or above spot"
+        )
         continue
+
+    below["strike"] = pd.to_numeric(below["strike"], errors="coerce")
+    below["put_oi"] = pd.to_numeric(below["put_oi"], errors="coerce")
+
+    above["strike"] = pd.to_numeric(above["strike"], errors="coerce")
+    above["call_oi"] = pd.to_numeric(above["call_oi"], errors="coerce")
 
     # Nearest strike on each side of spot.
     nearest_support = float(
-        below.loc[
-            (spot - below["strike"]).abs().idxmin(),
-            "strike"
-        ]
+        pd.to_numeric(
+            below.loc[
+                (spot - below["strike"]).abs().idxmin(),
+                "strike"
+            ],
+            errors="coerce",
+        )
     )
 
     nearest_resistance = float(
-        above.loc[
-            (above["strike"] - spot).abs().idxmin(),
-            "strike"
-        ]
+        pd.to_numeric(
+            above.loc[
+                (above["strike"] - spot).abs().idxmin(),
+                "strike"
+            ],
+            errors="coerce",
+        )
     )
 
     # OI-based candidates.
-    support_row = below.loc[below["put_oi"].idxmax()]
-    resistance_row = above.loc[above["call_oi"].idxmax()]
+    support_idx = below["put_oi"].idxmax()
+    resistance_idx = above["call_oi"].idxmax()
 
-    oi_support = float(support_row["strike"])
-    oi_resistance = float(resistance_row["strike"])
+    oi_support = float(
+        pd.to_numeric(
+            below.at[support_idx, "strike"],
+            errors="coerce",
+        )
+    )
+
+    oi_resistance = float(
+        pd.to_numeric(
+            above.at[resistance_idx, "strike"],
+            errors="coerce",
+        )
+    )
+
+    oi_support_put_oi = float(
+        pd.to_numeric(
+            below.at[support_idx, "put_oi"],
+            errors="coerce",
+        )
+    )
+
+    oi_resistance_call_oi = float(
+        pd.to_numeric(
+            above.at[resistance_idx, "call_oi"],
+            errors="coerce",
+        )
+    )
 
     print()
     print(symbol)
@@ -137,6 +199,14 @@ for symbol in EXPECTED:
     )
     print(
         f"Call-OI resistance     : {oi_resistance:g}"
+    )
+    
+    print(
+        f"Put OI                : {oi_support_put_oi:g}"
+    )
+
+    print(
+        f"Call OI               : {oi_resistance_call_oi:g}"
     )
 
     # Contract checks.

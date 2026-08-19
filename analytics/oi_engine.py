@@ -96,8 +96,91 @@ def calculate_oi_levels(df: pd.DataFrame) -> dict:
         resistance_candidates["call_oi"].idxmax()
     ]
 
-    support = float(support_row["strike"])
-    resistance = float(resistance_row["strike"])
+    df = df.copy()
+
+    df["strike"] = pd.to_numeric(
+        df["strike"],
+        errors="coerce",
+    )
+
+    df["call_oi"] = pd.to_numeric(
+        df["call_oi"],
+        errors="coerce",
+    )
+
+    df["put_oi"] = pd.to_numeric(
+        df["put_oi"],
+        errors="coerce",
+    )
+
+    df["spot_price"] = pd.to_numeric(
+        df["spot_price"],
+        errors="coerce",
+    )
+
+    # OI-based candidates.
+    df = df.dropna(
+        subset=[
+            "strike",
+            "call_oi",
+            "put_oi",
+            "spot_price",
+        ]
+    )
+
+    spot = float(df["spot_price"].iloc[0])
+
+    # Candidate strikes.
+    support_candidates = df[
+        df["strike"] <= spot
+    ].copy()
+
+    resistance_candidates = df[
+        df["strike"] >= spot
+    ].copy()
+
+    if support_candidates.empty:
+        raise ValueError(
+            f"No valid support strike at or below spot "
+            f"{spot:.2f}"
+        )
+
+    if resistance_candidates.empty:
+        raise ValueError(
+            f"No valid resistance strike at or above spot "
+            f"{spot:.2f}"
+        )
+
+    support_idx = support_candidates["put_oi"].idxmax()
+    resistance_idx = resistance_candidates["call_oi"].idxmax()
+
+    support = float(
+        pd.to_numeric(
+            support_candidates.at[support_idx, "strike"],
+            errors="coerce",
+        )
+    )
+
+    resistance = float(
+        pd.to_numeric(
+            resistance_candidates.at[resistance_idx, "strike"],
+            errors="coerce",
+        )
+    )
+
+    support_put_oi = float(
+        pd.to_numeric(
+            support_candidates.at[support_idx, "put_oi"],
+            errors="coerce",
+        )
+    )
+
+    resistance_call_oi = float(
+        pd.to_numeric(
+            resistance_candidates.at[resistance_idx, "call_oi"],
+            errors="coerce",
+        )
+    )
 
     if support > spot:
         raise AssertionError(
@@ -115,12 +198,8 @@ def calculate_oi_levels(df: pd.DataFrame) -> dict:
         "spot_price": spot,
         "support": support,
         "resistance": resistance,
-        "support_put_oi": float(
-            support_row["put_oi"]
-        ),
-        "resistance_call_oi": float(
-            resistance_row["call_oi"]
-        ),
+        "support_put_oi": support_put_oi,
+        "resistance_call_oi": resistance_call_oi,
         "range_width": resistance - support,
     }
 

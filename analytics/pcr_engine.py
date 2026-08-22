@@ -32,8 +32,11 @@ def calculate_pcr(df):
             f"PCR calculation missing required columns: {sorted(missing)}"
         )
 
-    call_oi = df["call_oi"].fillna(0).sum()
-    put_oi = df["put_oi"].fillna(0).sum()
+    if df["call_oi"].isna().any() or df["put_oi"].isna().any():
+        raise ValueError("PCR calculation does not allow missing OI values")
+
+    call_oi = df["call_oi"].sum()
+    put_oi = df["put_oi"].sum()
 
     if call_oi <= 0:
         raise ValueError("PCR calculation requires positive total call OI")
